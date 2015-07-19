@@ -1,0 +1,26 @@
+require 'json'
+
+require 'dependency'
+Dependency.activate
+require 'telemetry/logger'
+require 'uuid'
+require 'clock'
+require 'settings'
+require 'schema'
+Settings.activate
+require 'casing'
+require 'async_invocation'
+
+require 'event_store/client/http/settings'
+require 'event_store/client/http/stream/name'
+require 'event_store/client/http/stream/entry'
+require 'event_store/client/http/stream/slice'
+require 'event_store/client/http/atom/document'
+require 'event_store/client/http/event_data'
+require 'event_store/client/http/vertx/client_builder'
+require 'event_store/client/http/vertx/subscription'
+require 'event_store/client/http/vertx/write/builder'
+require 'event_store/client/http/vertx/write/request'
+require 'event_store/client/http/vertx/write'
+require 'event_store/client/http/vertx/writer'
+require 'event_store/client/http/vertx/reader'
