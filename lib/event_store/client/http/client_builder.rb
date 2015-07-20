@@ -26,15 +26,19 @@ module EventStore
         def self.build_client
           logger.trace "Building HTTP client"
 
-          Faraday.new.tap do |client|
+          client = Faraday.new do |client|
             Settings.instance.set(client, strict: false)
 
             client.adapter :net_http
             # client.use :http_cache, instrumenter: CacheLogger
-            # client.use :http_cache
+            client.use :http_cache
 
-            logger.trace "Built HTTP client (Class: #{client.class.name})"
+            client.response :logger
           end
+
+          logger.trace "Built HTTP client (Class: #{client.class.name})"
+
+          client
         end
 
         def self.logger
