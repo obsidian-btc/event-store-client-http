@@ -1,5 +1,6 @@
 require 'json'
 require 'faraday'
+require 'faraday/http_cache'
 
 require 'dependency'
 Dependency.activate

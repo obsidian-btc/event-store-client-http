@@ -2,6 +2,16 @@ module EventStore
   module Client
     module HTTP
       class ClientBuilder
+        class CacheLogger
+          def self.logger
+            @logger ||= Telemetry::Logger.get self
+          end
+
+          def self.instrument(instrument_name, payload)
+            logger.trace "#{instrument_name}: #{payload}"
+          end
+        end
+
         def self.configure_client(receiver)
           logger = logger()
 
@@ -20,6 +30,8 @@ module EventStore
             Settings.instance.set(client, strict: false)
 
             client.adapter :net_http
+            # client.use :http_cache, instrumenter: CacheLogger
+            client.use :http_cache
 
             logger.trace "Built HTTP client (Class: #{client.class.name})"
           end
