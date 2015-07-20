@@ -24,3 +24,4 @@ gem 'minitest', '~> 5.5.0'
 gem 'minitest-spec-context', '0.0.3'
 
 gem 'faraday', '~> 0.9.1'
+gem 'faraday-http-cache', '~> 1.1'
