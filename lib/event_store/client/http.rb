@@ -1,4 +1,5 @@
 require 'json'
+require 'faraday'
 
 require 'dependency'
 Dependency.activate

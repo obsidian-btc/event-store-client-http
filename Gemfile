@@ -22,3 +22,5 @@ gem 'naught', '1.0.0'
 
 gem 'minitest', '~> 5.5.0'
 gem 'minitest-spec-context', '0.0.3'
+
+gem 'faraday', '~> 0.9.1'
