@@ -31,7 +31,7 @@ module EventStore
 
             client.adapter :net_http
             # client.use :http_cache, instrumenter: CacheLogger
-            client.use :http_cache
+            # client.use :http_cache
 
             logger.trace "Built HTTP client (Class: #{client.class.name})"
           end
