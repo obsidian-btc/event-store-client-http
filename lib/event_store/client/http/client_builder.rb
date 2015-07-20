@@ -19,8 +19,8 @@ module EventStore
           client = Faraday.new do |client|
             Settings.instance.set(client, strict: false)
 
-            client.adapter :net_http
             client.use :http_cache, logger: logger
+            client.adapter :net_http
           end
 
           logger.trace "Built HTTP client (Class: #{client.class.name})"
