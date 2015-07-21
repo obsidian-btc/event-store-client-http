@@ -70,8 +70,8 @@ describe "Deserialized Entry" do
       assert(reply_stream_name == 'some_reply_stream')
     end
 
-    specify "Reply Stream Name" do
-      version = metadata['version']
+    specify "Schema Version" do
+      version = metadata['schema_version']
       assert(version == -1)
     end
   end
