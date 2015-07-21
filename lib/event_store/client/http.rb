@@ -27,3 +27,4 @@ require 'event_store/client/http/writer'
 require 'event_store/client/http/reader'
 
 require 'event_store/client/http/request/post'
+require 'event_store/client/http/request/get'
