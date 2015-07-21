@@ -32,6 +32,16 @@ module EventStore
             logger.debug "Posting to #{path}"
             logger.data data
 
+            request = request(data)
+
+            response = client.request(request)
+
+            logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+
+            response
+          end
+
+          def request(data, expected_version=nil)
             request = Net::HTTP::Post.new(path)
 
             set_event_store_content_type(request)
@@ -39,9 +49,7 @@ module EventStore
 
             request.body = data
 
-            response = client.request(request)
-
-            logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            request
           end
 
           def media_type
