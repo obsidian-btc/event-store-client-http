@@ -2,7 +2,9 @@ module EventStore
   module Client
     module HTTP
       module Request
-        class Post
+        class Get
+          attr_accessor :path
+
           dependency :logger, Telemetry::Logger
           dependency :client, Net::HTTP
 
@@ -11,7 +13,7 @@ module EventStore
           end
 
           def self.build(client=nil)
-            new(client).tap do |instance|
+            new(path, client).tap do |instance|
               Telemetry::Logger.configure instance
               instance.configure_client(client)
             end
@@ -25,23 +27,23 @@ module EventStore
             end
           end
 
-          def !(data, path, expected_version: nil)
+          def !(data, expected_version: nil)
             logger.debug "Posting to #{path}"
             logger.data data
 
-            response = post(data, path)
+            response = post(data)
 
             logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
 
             response
           end
 
-          def post(data, path)
-            request = build_request(data, path)
+          def post(data)
+            request = build_request(data)
             client.request(request)
           end
 
-          def build_request(data, path, expected_version=nil)
+          def build_request(data, expected_version=nil)
             request = Net::HTTP::Post.new(path)
 
             set_event_store_content_type(request)
@@ -63,6 +65,8 @@ module EventStore
           def set_expected_version(request, expected_version)
             request['ES-ExpectedVersion'] = expected_version
           end
+        end
+
         end
       end
     end
