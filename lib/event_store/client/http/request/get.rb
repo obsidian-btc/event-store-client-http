@@ -5,30 +5,6 @@ module EventStore
         class Get
           include Request
 
-          attr_accessor :path
-
-          dependency :logger, Telemetry::Logger
-          dependency :client, Net::HTTP
-
-          def initialize(client)
-            @client = client
-          end
-
-          def self.build(client=nil)
-            new(client).tap do |instance|
-              Telemetry::Logger.configure instance
-              instance.configure_client(client)
-            end
-          end
-
-          def configure_client(client=nil)
-            if client.nil?
-              ClientBuilder.configure_client self
-            else
-              self.client = client
-            end
-          end
-
           def !(path)
             logger.debug "Getting from #{path}"
 
