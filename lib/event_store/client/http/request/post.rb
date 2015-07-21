@@ -3,18 +3,15 @@ module EventStore
     module HTTP
       module Request
         class Post
-          attr_accessor :path
-
           dependency :logger, Telemetry::Logger
           dependency :client, Net::HTTP
 
-          def initialize(path, client)
-            @path = path
+          def initialize(client)
             @client = client
           end
 
-          def self.build(path, client=nil)
-            new(path, client).tap do |instance|
+          def self.build(client=nil)
+            new(client).tap do |instance|
               Telemetry::Logger.configure instance
               instance.configure_client(client)
             end
@@ -28,27 +25,28 @@ module EventStore
             end
           end
 
-          def !(data, expected_version: nil)
+          def !(data, path, expected_version: nil)
             logger.debug "Posting to #{path}"
             logger.data data
 
-            response = post(data)
+            response = post(data, path)
 
             logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.trace "Posted to #{path}"
 
             response
           end
 
-          def post(data)
-            request = build_request(data)
+          def post(data, path)
+            request = build_request(data, path)
             client.request(request)
           end
 
-          def build_request(data, expected_version=nil)
+          def build_request(data, path, expected_version=nil)
             request = Net::HTTP::Post.new(path)
 
-            set_event_store_content_type(request)
-            set_expected_version(request, expected_version) if expected_version
+            set_event_store_content_type_header(request)
+            set_expected_version_header(request, expected_version) if expected_version
 
             request.body = data
 
@@ -59,11 +57,11 @@ module EventStore
             'application/vnd.eventstore.events+json'
           end
 
-          def set_event_store_content_type(request)
+          def set_event_store_content_type_header(request)
             request['Content-Type'] = media_type
           end
 
-          def set_expected_version(request, expected_version)
+          def set_expected_version_header(request, expected_version)
             request['ES-ExpectedVersion'] = expected_version
           end
         end
