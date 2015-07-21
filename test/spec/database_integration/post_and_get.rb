@@ -6,10 +6,10 @@ describe "Posting event data" do
 
   data = Fixtures::EventData::Batch.json_text
 
-  post = EventStore::Client::HTTP::Request::Post.build client
+  post = EventStore::Client::HTTP::Request::Post.build
   post_response = post.! data, path
 
-  get = EventStore::Client::HTTP::Request::Get.build client
+  get = EventStore::Client::HTTP::Request::Get.build
   body_text, get_response = get.! "#{path}/0"
 
   specify "Post responds with successful status" do
