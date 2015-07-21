@@ -3,6 +3,8 @@ module EventStore
     module HTTP
       module Request
         class Post
+          include Request
+
           dependency :logger, Telemetry::Logger
           dependency :client, Net::HTTP
 

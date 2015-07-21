@@ -3,6 +3,8 @@ module EventStore
     module HTTP
       module Request
         class Get
+          include Request
+
           attr_accessor :path
 
           dependency :logger, Telemetry::Logger
