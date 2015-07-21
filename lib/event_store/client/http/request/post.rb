@@ -12,7 +12,7 @@ module EventStore
             response = post(data, path)
 
             logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
-            logger.trace "Posted to #{path}"
+            logger.info "Posted to #{path}"
 
             response
           end
