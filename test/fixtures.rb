@@ -114,19 +114,21 @@ module Fixtures
       count ||= 1
 
       stream_name = Fixtures::Stream.name stream_name
-      writer = EventStore::Client::HTTP::Vertx::Writer.build
+      path = "/streams/#{stream_name}"
 
-      i = 0
-      timer_id = Vertx.set_periodic(1) do
+      post = EventStore::Client::HTTP::Request::Post.build
+
+      count.times do |i|
         i += 1
-        if i <= count
-          first_octet = (i).to_s.rjust(8, '0')
-          id = "#{first_octet}-0000-0000-0000-000000000000"
-          event_data = Fixtures::EventData.example id
-          writer.write stream_name, event_data
-        else
-          Vertx.cancel_timer(timer_id)
-        end
+
+        first_octet = (i).to_s.rjust(8, '0')
+        id = "#{first_octet}-0000-0000-0000-000000000000"
+
+        event_data = Fixtures::EventData::Batch.example(id)
+
+        json_text = event_data.serialize
+
+        post_response = post.! json_text, path
       end
 
       stream_name
@@ -137,9 +139,13 @@ module Fixtures
         "[#{EventData.json_text}]"
       end
 
-      def self.example
+      def self.example(id=nil)
+        id ||= '10000000-0000-0000-0000-000000000000'
+
+        event_data = EventStore::Client::HTTP::EventData.build
+
         batch = EventStore::Client::HTTP::EventData::Batch.build
-        batch.add EventData.example
+        batch.add EventData.example(id)
         batch
       end
     end
