@@ -148,17 +148,12 @@ module Fixtures
   module Metadata
     def self.data
       {
-        source_stream_name: 'some_source_stream',
-        correlation_stream_name: 'some_correlation_stream',
-        causation_event_id: 'some_causation_event_id',
-        causation_stream_name: 'some_causation_stream',
-        reply_stream_name: 'some_reply_stream',
-        version: -1
+        some_meta_attribute: 'some metadata value'
       }
     end
 
     def self.json_text
-      '"metaData":{"sourceStreamName":"some_source_stream","correlationStreamName":"some_correlation_stream","causationEventId":"some_causation_event_id","causationStreamName":"some_causation_stream","replyStreamName":"some_reply_stream","version":-1}'
+      '"metaData":{"someMetaAttribute":"some metadata value"}'
     end
   end
 end

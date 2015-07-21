@@ -45,6 +45,9 @@ module EventStore
           "Type: #{type}, ID: #{id}"
         end
 
+        class Metadata
+        end
+
         class Batch
           dependency :logger, Telemetry::Logger
 
