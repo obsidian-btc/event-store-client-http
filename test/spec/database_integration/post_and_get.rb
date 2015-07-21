@@ -11,8 +11,8 @@ describe "Posting event data" do
   post = EventStore::Client::HTTP::Request::Post.build client
   post_response = post.! data, path
 
-  # get = EventStore::Client::HTTP::Request::Get.build path, client
-  # get_response = get.! path
+  get = EventStore::Client::HTTP::Request::Get.build client
+  get_response = get.! "#{path}/0"
 
   specify "Responds with successful status" do
     assert(post_response.is_a? Net::HTTPCreated)

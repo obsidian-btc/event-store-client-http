@@ -13,7 +13,7 @@ module EventStore
           end
 
           def self.build(client=nil)
-            new(path, client).tap do |instance|
+            new(client).tap do |instance|
               Telemetry::Logger.configure instance
               instance.configure_client(client)
             end
@@ -27,46 +27,40 @@ module EventStore
             end
           end
 
-          def !(data, expected_version: nil)
-            logger.debug "Posting to #{path}"
-            logger.data data
+          def !(path)
+            logger.debug "Getting from #{path}"
 
-            response = post(data)
+            response = get(path)
+            body = response.body
 
-            logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.debug "GET Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.trace "Got from #{path}"
 
-            response
+            logger.data body
+
+            return body, response
           end
 
-          def post(data)
-            request = build_request(data)
+          def get(path)
+            request = build_request(path)
             client.request(request)
           end
 
-          def build_request(data, expected_version=nil)
-            request = Net::HTTP::Post.new(path)
+          def build_request(path)
+            request = Net::HTTP::Get.new(path)
 
-            set_event_store_content_type(request)
-            set_expected_version(request, expected_version) if expected_version
-
-            request.body = data
+            set_event_store_accept_header(request)
 
             request
           end
 
           def media_type
-            'application/vnd.eventstore.events+json'
+            'application/vnd.eventstore.atom+json'
           end
 
-          def set_event_store_content_type(request)
-            request['Content-Type'] = media_type
+          def set_event_store_accept_header(request)
+            request['Accept'] = media_type
           end
-
-          def set_expected_version(request, expected_version)
-            request['ES-ExpectedVersion'] = expected_version
-          end
-        end
-
         end
       end
     end
