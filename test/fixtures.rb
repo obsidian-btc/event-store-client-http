@@ -134,7 +134,7 @@ module Fixtures
 
     module Batch
       def self.json_text
-        '[{"id":"10000000-0000-0000-0000-000000000000","type":"SomeEvent","data":{"someAttribute":"some value"}}]'
+        "[#{EventData.json_text}]"
       end
 
       def self.example
