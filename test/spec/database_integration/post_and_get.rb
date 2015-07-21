@@ -6,8 +6,6 @@ describe "Posting event data" do
 
   data = Fixtures::EventData::Batch.json_text
 
-  client = EventStore::Client::HTTP::Client.build
-
   post = EventStore::Client::HTTP::Request::Post.build client
   post_response = post.! data, path
 
