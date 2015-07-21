@@ -32,16 +32,19 @@ module EventStore
             logger.debug "Posting to #{path}"
             logger.data data
 
-            request = request(data)
-
-            response = client.request(request)
+            response = post(data)
 
             logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
 
             response
           end
 
-          def request(data, expected_version=nil)
+          def post(data)
+            request = build_request(data)
+            client.request(request)
+          end
+
+          def build_request(data, expected_version=nil)
             request = Net::HTTP::Post.new(path)
 
             set_event_store_content_type(request)
