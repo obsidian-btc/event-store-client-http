@@ -6,7 +6,7 @@ module EventStore
           cls.extend Build
 
           cls.send :dependency, :logger, Telemetry::Logger
-          cls.send :dependency, :client, Net::HTTP
+          cls.send :dependency, :client, EventStore::Client::HTTP::Client
         end
 
         module Build
@@ -24,7 +24,7 @@ module EventStore
 
         def configure_client(client=nil)
           if client.nil?
-            ClientBuilder.configure_client self
+            Client.configure self
           else
             self.client = client
           end

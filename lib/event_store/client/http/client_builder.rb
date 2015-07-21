@@ -20,7 +20,7 @@ module EventStore
           port = Settings.instance.get 'port'
 
           client = Net::HTTP.new(host, port).tap do
-            logger.trace "Built HTTP client (Class: #{client.class.name})"
+            logger.debug "Built HTTP client (Class: #{client.class.name})"
           end
         end
 
