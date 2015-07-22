@@ -2,8 +2,6 @@
   module Client
     module HTTP
       class SliceReader
-        class Error < RuntimeError; end
-
         attr_accessor :stream_name
         attr_writer :starting_position
         attr_reader :start_uri
