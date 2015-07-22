@@ -13,7 +13,6 @@ prox_gem 'settings'
 prox_gem 'set_attributes'
 prox_gem 'virtual'
 prox_gem 'casing'
-prox_gem 'async_invocation'
 
 source 'https://rubygems.org'
 

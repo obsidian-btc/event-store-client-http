@@ -10,7 +10,6 @@ require 'settings'
 require 'schema'
 Settings.activate
 require 'casing'
-require 'async_invocation'
 
 require 'event_store/client/http/settings'
 require 'event_store/client/http/stream/name'
@@ -29,3 +28,4 @@ require 'event_store/client/http/client'
 require 'event_store/client/http/request'
 require 'event_store/client/http/request/post'
 require 'event_store/client/http/request/get'
+require 'event_store/client/http/slice_reader'

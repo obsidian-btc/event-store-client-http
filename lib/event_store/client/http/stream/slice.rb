@@ -16,7 +16,7 @@ module EventStore
           end
 
           def self.build(json_text)
-            logger.trace 'Building page'
+            logger.trace 'Building slice'
 
             data = parse_json(json_text)
 
@@ -29,6 +29,8 @@ module EventStore
 
           def self.parse_json(json_text)
             logger.trace "Parsing JSON"
+            logger.data json_text
+
             JSON.parse(json_text).tap do
               logger.debug "Parsed JSON"
             end
