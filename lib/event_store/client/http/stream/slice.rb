@@ -19,17 +19,16 @@ module EventStore
             logger.trace 'Building slice'
 
             data = parse_json(json_text)
+            logger.data data
 
             new(data).tap do |instance|
               Telemetry::Logger.configure instance
-              logger.debug 'Built page'
-              logger.data "Slice data: #{data}"
+              logger.debug 'Built slice'
             end
           end
 
           def self.parse_json(json_text)
             logger.trace "Parsing JSON"
-            logger.data json_text
 
             JSON.parse(json_text).tap do
               logger.debug "Parsed JSON"
@@ -57,7 +56,7 @@ module EventStore
 
             new(next_uri).tap do |instance|
               logger.debug 'Built page links'
-              logger.data "Links data: #{links}"
+              logger.data links
             end
           end
 

@@ -6,13 +6,13 @@ module EventStore
           include Request
 
           def !(data, path, expected_version: nil)
-            logger.debug "Posting to #{path}"
+            logger.info "Posting to #{path}"
             logger.data data
 
             response = post(data, path)
 
-            logger.debug "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
-            logger.info "Posted to #{path}"
+            logger.info "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.debug "Posted to #{path}"
 
             response
           end

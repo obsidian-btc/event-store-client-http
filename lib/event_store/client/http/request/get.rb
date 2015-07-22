@@ -6,13 +6,13 @@ module EventStore
           include Request
 
           def !(path)
-            logger.debug "Getting from #{path}"
+            logger.trace "Getting from #{path}"
 
             response = get(path)
             body = response.body
 
-            logger.debug "GET Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
-            logger.info "Got from #{path}"
+            logger.info "GET Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.debug "Got from #{path}"
 
             logger.data body
 

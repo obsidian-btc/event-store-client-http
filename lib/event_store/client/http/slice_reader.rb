@@ -2,11 +2,10 @@
   module Client
     module HTTP
       class SliceReader
-        class Error < RuntimeError; end
-
         attr_accessor :stream_name
         attr_writer :starting_position
         attr_reader :start_uri
+        attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
@@ -46,26 +45,38 @@
         def each(uri=nil, &action)
           uri ||= start_uri
 
-          logger.trace "Getting (URI: #{uri})"
+          self.next_uri = uri
 
-          slice = get(uri)
+          while next?
+            slice = self.next(next_uri)
+            action.call slice
+          end
 
-          action.call slice
-
-          next_uri = slice.links.next_uri
-          logger.debug "Next URI: #{next_uri}"
-
-          logger.trace "Got (URI: #{uri})"
           nil
         end
 
+        def next?
+          !!next_uri
+        end
+
+        def next(uri)
+          slice = get(uri)
+
+          self.next_uri = slice.links.next_uri
+          logger.debug "Next URI: #{next_uri}"
+
+          return slice
+        end
+
         def get(uri)
+          logger.trace "Getting (URI: #{uri})"
           body, _ = request.! uri
 
           logger.data body
 
-          slice = Stream::Slice.build body
-          slice
+          Stream::Slice.build(body).tap do
+            logger.trace "Got (URI: #{uri})"
+          end
         end
 
         def self.slice_path(stream_name, starting_position, slice_size)
