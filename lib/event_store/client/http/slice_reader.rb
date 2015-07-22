@@ -48,15 +48,29 @@
 
           logger.trace "Getting (URI: #{uri})"
 
-          slice = get(uri)
+          # slice = get(uri)
 
+          slice = self.next(uri)
           action.call slice
+
+          # next_uri = slice.links.next_uri
+          # logger.debug "Next URI: #{next_uri}"
+
+          logger.trace "Got (URI: #{uri})"
+          nil
+        end
+
+        def next?
+          !!next_uri
+        end
+
+        def next(uri)
+          slice = get(uri)
 
           next_uri = slice.links.next_uri
           logger.debug "Next URI: #{next_uri}"
 
-          logger.trace "Got (URI: #{uri})"
-          nil
+          slice
         end
 
         def get(uri)
