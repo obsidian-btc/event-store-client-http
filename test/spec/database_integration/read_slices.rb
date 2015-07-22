@@ -1,23 +1,29 @@
 require_relative './database_integration_init'
 
-stream_name = Fixtures::EventData.write 2, 'testSliceReaderEach'
+describe "Read Slices" do
+  stream_name = Fixtures::EventData.write 2, 'testSliceReaderEach'
 
-logger(__FILE__).info stream_name
+  reader = EventStore::Client::HTTP::SliceReader.build stream_name, slice_size: 1
 
-reader = EventStore::Client::HTTP::SliceReader.build stream_name, slice_size: 1
+  slices = []
 
-slice_number = 0
+  reader.each do |slice|
+    slices << slice
+  end
 
-reader.each do |slice|
-  slice_number += 1
-  logger(__FILE__).info "== BEGIN SLICE =="
-  logger(__FILE__).info "Slice number: #{slice_number}"
+  specify "Slices are read" do
+    assert(slices.length == 3)
+  end
 
-  first_entry_id = slice.data['entries'][0]['id'] rescue "(none)"
-  logger(__FILE__).info "First entry ID: #{first_entry_id}"
+  specify "All but the last slice has entries" do
+    2.times do |i|
+      number_of_entries = slices[i].data['entries'].length
+      assert(number_of_entries == 1)
+    end
+  end
 
-  number_of_entries = slice.data['entries'].length
-  logger(__FILE__).info "Slice entries: #{number_of_entries}"
-
-  logger(__FILE__).info "== END SLICE =="
+  specify "The last slice has no entries" do
+    number_of_entries = slices.last.data['entries'].length
+    assert(number_of_entries == 0)
+  end
 end
