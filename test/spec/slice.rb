@@ -2,7 +2,7 @@ require_relative 'spec_init'
 
 describe "Stream Slice" do
   json_text = Fixtures::Stream::Slice.text
-  slice = EventStore::Client::HTTP::Stream::Slice.build(json_text)
+  slice = EventStore::Client::HTTP::Stream::Slice.parse(json_text)
 
   specify "Entries" do
     assert(slice.data['entries'].length == 3)

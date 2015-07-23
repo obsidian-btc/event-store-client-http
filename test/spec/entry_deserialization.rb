@@ -1,9 +1,9 @@
 require_relative 'spec_init'
 
 describe "Deserialized Entry" do
-  entry_data = Fixtures::Stream::Entry::JSON.data
+  entry_data = Fixtures::Stream::Entry::JSON::Raw.text
 
-  entry = EventStore::Client::HTTP::Stream::Entry.deserialize entry_data
+  entry = EventStore::Client::HTTP::Stream::Entry.parse entry_data
 
   specify "ID" do
     assert(entry.id == '10000000-0000-0000-0000-000000000000')

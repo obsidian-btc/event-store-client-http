@@ -7,6 +7,10 @@ module EventStore
 
           dependency :logger, Telemetry::Logger
 
+          def entries
+            data['entries']
+          end
+
           def links
             @links ||= Links.build data['links']
           end
@@ -15,16 +19,20 @@ module EventStore
             @data = data
           end
 
-          def self.build(json_text)
+          def self.build(data)
             logger.trace 'Building slice'
-
-            data = parse_json(json_text)
-            logger.data data
 
             new(data).tap do |instance|
               Telemetry::Logger.configure instance
               logger.debug 'Built slice'
             end
+          end
+
+          def self.parse(json_text)
+            data = parse_json(json_text)
+            logger.data data
+
+            build(data)
           end
 
           def self.parse_json(json_text)

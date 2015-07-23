@@ -2,6 +2,16 @@ require 'pathname'
 require 'time'
 
 module Fixtures
+  module ID
+    def self.get(i=nil)
+      i ||= 1
+
+      first_octet = (i).to_s.rjust(8, '0')
+
+      "#{first_octet}-0000-0000-0000-000000000000"
+    end
+  end
+
   module ATOM
     module Document
       def self.data
@@ -47,9 +57,13 @@ module Fixtures
     end
 
     module Entry
-      def self.data
+      def self.data(i=nil)
+        i ||= 1
+
+        id = ID.get(i)
+
         {
-          id: '10000000-0000-0000-0000-000000000000',
+          id: id,
           type: 'SomeEvent',
           number: 1,
           position: 11,
@@ -67,19 +81,76 @@ module Fixtures
       end
 
       module JSON
-        def self.data
-          ::JSON.parse(text)
+        def self.data(i=nil)
+          i ||= 1
+
+          id = ID.get(i)
+
+          {
+            eventId: id,
+            eventType: 'SomeEvent',
+            eventNumber: 1,
+            positionEventNumber: 11,
+            streamId: 'someStream',
+            id: 'http://127.0.0.1:2113/streams/someStream/1',
+            updated: '2015-06-08T04:37:01.066935Z',
+            data: {
+              'someAttribute' => 'some value',
+              'someTime' => '2015-06-07T23:37:01Z'
+            },
+            metaData: {
+              "someMetaAttribute" => "some meta value"
+            }
+          }
         end
 
         def self.text
-          File.read(filepath)
+          data.to_json
         end
 
-        def self.filepath
-          pathname = Pathname.new __FILE__
-          pathname = Pathname.new pathname.dirname
-          pathname += 'data/entry.json'
-          pathname.to_s
+        def self.list(count=nil)
+          count ||= 1
+
+          list = []
+
+          count.times do |i|
+            i += 1
+            entry = data(i)
+            list << entry
+          end
+
+          list
+        end
+
+        module Raw
+          def self.data
+            ::JSON.parse(text)
+          end
+
+          def self.text
+            File.read(filepath)
+          end
+
+          def self.list(count=nil)
+            count ||= 1
+
+            list = []
+
+            count.times do |i|
+              i += 1
+              entry = data
+              list << entry
+            end
+
+            list
+          end
+
+          def self.filepath
+            pathname = Pathname.new __FILE__
+            pathname = Pathname.new pathname.dirname
+            pathname += 'data/entry.json'
+            pathname.to_s
+          end
         end
       end
     end
@@ -121,8 +192,7 @@ module Fixtures
       count.times do |i|
         i += 1
 
-        first_octet = (i).to_s.rjust(8, '0')
-        id = "#{first_octet}-0000-0000-0000-000000000000"
+        id = ID.get(i)
 
         event_data = Fixtures::EventData::Batch.example(id)
 

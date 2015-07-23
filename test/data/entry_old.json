@@ -1,0 +1,31 @@
+{
+  "eventId": "10000000-0000-0000-0000-000000000000",
+  "eventType": "SomeEvent",
+  "eventNumber": 1,
+  "data": "{\"someAttribute\":\"some value\",\"someTime\":\"2015-06-07T23:37:01Z\"}",
+  "metaData": "{\"correlationStreamName\":\"some_correlation_stream\",\"causationEventId\":\"some_causation_event_id\",\"causationStreamName\":\"some_causation_stream\",\"replyStreamName\":\"some_reply_stream\",\"schema_version\":-1}",
+  "linkMetaData": "{\n  \"$v\": \"3:-1:1:3\",\n  \"$c\": 175844,\n  \"$p\": 175844,\n  \"$o\": \"sendFunds-59C1C672-D5FE-4C70-95C5-FAB85C4714CE\",\n  \"$causedBy\": \"fbf4b1a1-b4a3-4dfe-a01f-ec52c34e16e4\"\n}",
+  "streamId": "someStream-10000000-0000-0000-0000-000000000001",
+  "isJson": true,
+  "isMetaData": true,
+  "isLinkMetaData": true,
+  "positionEventNumber": 11,
+  "positionStreamId": "$ce-sendFunds",
+  "title": "0@sendFunds-10000000-0000-0000-0000-000000000001",
+  "id": "http://127.0.0.1:2113/streams/sendFunds-10000000-0000-0000-0000-000000000001/0",
+  "updated": "2015-06-30T03:59:21.152087Z",
+  "author": {
+    "name": "EventStore"
+  },
+  "summary": "$>",
+  "links": [
+    {
+      "uri": "http://127.0.0.1:2113/streams/sendFunds-59C1C672-D5FE-4C70-95C5-FAB85C4714CE/0",
+      "relation": "edit"
+    },
+    {
+      "uri": "http://127.0.0.1:2113/streams/sendFunds-59C1C672-D5FE-4C70-95C5-FAB85C4714CE/0",
+      "relation": "alternate"
+    }
+  ]
+}

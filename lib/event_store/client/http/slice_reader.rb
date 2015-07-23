@@ -30,7 +30,7 @@
           starting_position ||= 0
           slice_size ||= 20
 
-          logger.trace "Building Reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+          logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
 
           start_uri = slice_path(stream_name, starting_position, slice_size)
           logger.debug "Starting URI: #{start_uri}"
@@ -38,7 +38,7 @@
           new(start_uri).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
             Telemetry::Logger.configure instance
-            logger.debug "Built Reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
+            logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
           end
         end
 
@@ -53,10 +53,6 @@
           end
 
           nil
-        end
-
-        def next?
-          !!next_uri
         end
 
         def next(uri)
@@ -74,13 +70,13 @@
 
           logger.data body
 
-          Stream::Slice.build(body).tap do
+          Stream::Slice.parse(body).tap do
             logger.trace "Got (URI: #{uri})"
           end
         end
 
         def self.slice_path(stream_name, starting_position, slice_size)
-          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}"
+          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}?embed=pretty"
         end
 
         def self.logger
