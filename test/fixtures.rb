@@ -12,24 +12,24 @@ module Fixtures
     end
   end
 
-  module ATOM
-    module Document
-      def self.data
-        JSON.parse(text)
-      end
+  # module ATOM
+  #   module Document
+  #     def self.data
+  #       JSON.parse(text)
+  #     end
 
-      def self.text
-        File.read(filepath)
-      end
+  #     def self.text
+  #       File.read(filepath)
+  #     end
 
-      def self.filepath
-        pathname = Pathname.new __FILE__
-        pathname = Pathname.new pathname.dirname
-        pathname += 'data/someStream.json'
-        pathname.to_s
-      end
-    end
-  end
+  #     def self.filepath
+  #       pathname = Pathname.new __FILE__
+  #       pathname = Pathname.new pathname.dirname
+  #       pathname += 'data/someStream.json'
+  #       pathname.to_s
+  #     end
+  #   end
+  # end
 
   module Stream
     def self.name(category=nil, id=nil)
@@ -160,7 +160,7 @@ module Fixtures
     def self.example(id=nil)
       id ||= '10000000-0000-0000-0000-000000000000'
 
-      event_data = EventStore::Client::HTTP::EventData.build
+      event_data = EventStore::Client::HTTP::EventData::Write.build
 
       event_data.id = id
 
@@ -205,10 +205,6 @@ module Fixtures
     end
 
     module Batch
-      def self.json_text
-        "[#{EventData.json_text}]"
-      end
-
       def self.example(id=nil)
         id ||= '10000000-0000-0000-0000-000000000000'
 
@@ -217,6 +213,10 @@ module Fixtures
         batch = EventStore::Client::HTTP::EventData::Batch.build
         batch.add EventData.example(id)
         batch
+      end
+
+      def self.json_text
+        example.serialize
       end
     end
   end

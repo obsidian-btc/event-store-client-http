@@ -10,7 +10,7 @@ describe "Posting event data" do
   post_response = post.! data, path
 
   get = EventStore::Client::HTTP::Request::Get.build
-  body_text, get_response = get.! "#{path}/0?embed=TryHarder"
+  body_text, get_response = get.! "#{path}/0"
 
   specify "Post responds with successful status" do
     assert(post_response.is_a? Net::HTTPCreated)

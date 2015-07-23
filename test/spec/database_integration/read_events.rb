@@ -4,11 +4,11 @@ describe "Read Events" do
 
   stream_name = Fixtures::EventData.write 2, 'testEntryReader'
 
-  slice_reader = EventStore::Client::HTTP::SliceReader.build stream_name
+  stream_reader = EventStore::Client::HTTP::StreamReader.build stream_name, slice_size: 1
 
-  uri = slice_reader.start_uri
+  uri = stream_reader.start_uri
 
-  slice = slice_reader.next(uri)
+  slice = stream_reader.next(uri)
 
   raw_entries = slice.entries
 

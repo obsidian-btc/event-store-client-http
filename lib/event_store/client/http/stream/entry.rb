@@ -44,32 +44,13 @@ module EventStore
 
             data = {}
 
-            content = entry_data['content']
+            data['created_time'] = entry_data['updated']
 
-            ## data['id'] = content['eventId']
+            content = entry_data['content']
 
             data['type'] = content['eventType']
             data['stream_name'] = content['eventStreamId']
-            data['position'] = content['eventNumber']
-
-            ## data['relative_position'] = content['positionEventNumber']
-
-            # data['uri'] = content['id']
-
-            data['created_time'] = entry_data['updated']
-
-            # entry_data_data = content['data']
-            # if entry_data_data && !entry_data_data.empty?
-            #   data['data'] = deserialize_embedded_data(entry_data_data)
-            # end
-
-            # entry_data_metadata = content['metaData']
-            # if entry_data_metadata && !entry_data_metadata.empty?
-            #   data['metadata'] = deserialize_embedded_data(entry_data_metadata)
-            #   data['metadata']['event_id'] = content['eventId']
-            #   data['metadata']['source_stream_name'] = content['streamId']
-            # end
-
+            data['number'] = content['eventNumber']
             data['data'] = content['data']
             data['metadata'] = content['metadata']
 

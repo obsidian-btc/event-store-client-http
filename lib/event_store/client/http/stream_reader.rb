@@ -1,7 +1,7 @@
  module EventStore
   module Client
     module HTTP
-      class SliceReader
+      class StreamReader
         attr_accessor :stream_name
         attr_writer :starting_position
         attr_reader :start_uri
@@ -76,7 +76,7 @@
         end
 
         def self.slice_path(stream_name, starting_position, slice_size)
-          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}?embed=pretty"
+          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}"
         end
 
         def self.logger

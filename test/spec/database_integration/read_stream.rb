@@ -3,7 +3,7 @@ require_relative './database_integration_init'
 describe "Read Slices" do
   stream_name = Fixtures::EventData.write 2, 'testSliceReaderEach'
 
-  reader = EventStore::Client::HTTP::SliceReader.build stream_name, slice_size: 1
+  reader = EventStore::Client::HTTP::StreamReader.build stream_name, slice_size: 1
 
   slices = []
 
