@@ -10,11 +10,11 @@ describe "Read Events" do
 
   slice = stream_reader.next(uri)
 
-  raw_entries = slice.entries
+  raw_events = slice.entries
 
   reader = EventStore::Client::HTTP::EventReader.build
 
-  reader.each_entry(raw_entries) do |entry|
-    logger(__FILE__).data entry.inspect
+  reader.each_event(raw_events) do |event|
+    logger(__FILE__).data event.inspect
   end
 end

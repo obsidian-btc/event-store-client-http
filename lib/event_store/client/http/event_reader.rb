@@ -16,7 +16,7 @@
           end
         end
 
-        def each_entry(raw_entries, &action)
+        def each_event(raw_entries, &action)
           raw_entries.reverse_each do |raw_entry|
             entry = get_entry(raw_entry)
             action.call entry
