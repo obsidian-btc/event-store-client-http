@@ -68,7 +68,7 @@
           logger.trace "Getting (URI: #{uri})"
           body, _ = request.! uri
 
-          logger.data body
+          logger.data "(#{body.class}) #{body}"
 
           Stream::Slice.parse(body).tap do
             logger.trace "Got (URI: #{uri})"

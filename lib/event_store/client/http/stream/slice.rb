@@ -30,7 +30,8 @@ module EventStore
 
           def self.parse(json_text)
             data = parse_json(json_text)
-            logger.data data
+            logger.data "(#{data.class}) #{data}"
+
 
             build(data)
           end

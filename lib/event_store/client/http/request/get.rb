@@ -14,7 +14,7 @@ module EventStore
             logger.info "GET Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
             logger.debug "Got from #{path}"
 
-            logger.data body
+            logger.data "(#{body.class}) #{body}"
 
             return body, response
           end
