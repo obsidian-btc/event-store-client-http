@@ -12,7 +12,7 @@ describe "Read Events" do
 
   raw_entries = slice.entries
 
-  reader = EventStore::Client::HTTP::EntryReader.build
+  reader = EventStore::Client::HTTP::EventReader.build
 
   reader.each_entry(raw_entries) do |entry|
     logger(__FILE__).data entry.inspect

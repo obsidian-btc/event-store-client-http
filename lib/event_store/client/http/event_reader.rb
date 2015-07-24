@@ -1,7 +1,7 @@
  module EventStore
   module Client
     module HTTP
-      class EntryReader
+      class EventReader
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
@@ -18,12 +18,7 @@
 
         def each_entry(raw_entries, &action)
           raw_entries.reverse_each do |raw_entry|
-            event_id = raw_entry['eventId']
-
             entry = get_entry(raw_entry)
-
-            entry.id = event_id
-
             action.call entry
           end
         end
@@ -33,14 +28,14 @@
           parse_entry(json_text)
         end
 
-        def parse_entry(json_text)
-          Stream::Entry.parse json_text
-        end
-
         def get_json_text(raw_entry)
           uri = entry_link(raw_entry)
           body_text, _ = request.! uri
           body_text
+        end
+
+        def parse_entry(json_text)
+          EventData::Read.parse json_text
         end
 
         def entry_link(raw_entry)
