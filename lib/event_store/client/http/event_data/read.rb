@@ -38,8 +38,10 @@ module EventStore
             data['type'] = content['eventType']
             data['number'] = content['eventNumber']
             data['stream_name'] = content['eventStreamId']
-            data['data'] = content['data']
-            data['metadata'] = content['metadata']
+
+            data['data'] = format(content['data'])
+
+            data['metadata'] = format(content['metadata'])
 
             links = entry_data['links']
 

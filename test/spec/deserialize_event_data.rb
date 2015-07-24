@@ -24,15 +24,15 @@ describe "Deserialized Entry" do
 
   specify "Data" do
     control_data = {
-      'someAttribute' => 'some value',
-      'someTime' => reference_time
+      'some_attribute' => 'some value',
+      'some_time' => reference_time
     }
 
     assert(event_data.data == control_data)
   end
 
   specify "Metadata" do
-    assert(event_data.metadata == { 'someMetaAttribute' => 'some meta value' })
+    assert(event_data.metadata == { 'some_meta_attribute' => 'some meta value' })
   end
 
   describe "Links" do
