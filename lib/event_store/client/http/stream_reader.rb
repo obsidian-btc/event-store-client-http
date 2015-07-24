@@ -1,7 +1,7 @@
  module EventStore
   module Client
     module HTTP
-      class SliceReader
+      class StreamReader
         attr_accessor :stream_name
         attr_writer :starting_position
         attr_reader :start_uri
@@ -30,7 +30,7 @@
           starting_position ||= 0
           slice_size ||= 20
 
-          logger.trace "Building Reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+          logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
 
           start_uri = slice_path(stream_name, starting_position, slice_size)
           logger.debug "Starting URI: #{start_uri}"
@@ -38,7 +38,7 @@
           new(start_uri).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
             Telemetry::Logger.configure instance
-            logger.debug "Built Reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
+            logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
           end
         end
 
@@ -55,10 +55,6 @@
           nil
         end
 
-        def next?
-          !!next_uri
-        end
-
         def next(uri)
           slice = get(uri)
 
@@ -72,9 +68,9 @@
           logger.trace "Getting (URI: #{uri})"
           body, _ = request.! uri
 
-          logger.data body
+          logger.data "(#{body.class}) #{body}"
 
-          Stream::Slice.build(body).tap do
+          Stream::Slice.parse(body).tap do
             logger.trace "Got (URI: #{uri})"
           end
         end

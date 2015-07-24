@@ -1,116 +1,65 @@
-{
-  "title": "Event stream 'someStream'",
-  "id": "http://127.0.0.1:2113/streams/someStream",
-  "updated": "2015-06-08T04:37:01.066935Z",
-  "streamId": "someStream",
+ {
+  "title": "Event stream 'testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c'",
+  "id": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c",
+  "updated": "2015-07-23T11:57:26.149322Z",
+  "streamId": "testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c",
   "author": {
     "name": "EventStore"
   },
-  "headOfStream": true,
-  "selfUrl": "http://127.0.0.1:2113/streams/someStream",
-  "eTag": "2;248368668",
+  "headOfStream": false,
   "links": [
     {
-      "uri": "http://127.0.0.1:2113/streams/someStream",
+      "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c",
       "relation": "self"
     },
     {
-      "uri": "http://127.0.0.1:2113/streams/someStream/head/backward/20",
+      "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/head/backward/20",
       "relation": "first"
     },
     {
-      "uri": "http://127.0.0.1:2113/streams/someStream/3/forward/20",
+      "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/2/forward/20",
       "relation": "previous"
     },
     {
-      "uri": "http://127.0.0.1:2113/streams/someStream/metadata",
+      "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/metadata",
       "relation": "metadata"
     }
   ],
   "entries": [
     {
-      "eventId": "204d6d7e-01d6-493f-b548-9dcd457d8d06",
-      "eventType": "SomeEvent",
-      "eventNumber": 2,
-      "data": "{\"someAttribute\":\"some value\",\"someTime\":\"2015-06-07T23:37:01Z\"}",
-      "streamId": "someStream",
-      "isJson": true,
-      "isMetaData": false,
-      "isLinkMetaData": false,
-      "positionEventNumber": 2,
-      "positionStreamId": "someStream",
-      "title": "2@someStream",
-      "id": "http://127.0.0.1:2113/streams/someStream/2",
-      "updated": "2015-06-08T04:37:01.066935Z",
+      "title": "1@testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c",
+      "id": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/1",
+      "updated": "2015-07-23T11:57:26.195643Z",
       "author": {
         "name": "EventStore"
       },
       "summary": "SomeEvent",
       "links": [
         {
-          "uri": "http://127.0.0.1:2113/streams/someStream/2",
+          "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/1",
           "relation": "edit"
         },
         {
-          "uri": "http://127.0.0.1:2113/streams/someStream/2",
+          "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/1",
           "relation": "alternate"
         }
       ]
     },
     {
-      "eventId": "b6f47c20-337c-4c40-8a73-7bd8a6adf976",
-      "eventType": "SomeEvent",
-      "eventNumber": 1,
-      "data": "{\"someAttribute\":\"some value\",\"someTime\":\"2015-06-07T23:36:18Z\"}",
-      "streamId": "someStream",
-      "isJson": true,
-      "isMetaData": false,
-      "isLinkMetaData": false,
-      "positionEventNumber": 1,
-      "positionStreamId": "someStream",
-      "title": "1@someStream",
-      "id": "http://127.0.0.1:2113/streams/someStream/1",
-      "updated": "2015-06-08T04:36:18.049493Z",
+      "title": "0@testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c",
+      "id": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/0",
+      "updated": "2015-07-23T11:57:26.149322Z",
       "author": {
         "name": "EventStore"
       },
       "summary": "SomeEvent",
       "links": [
         {
-          "uri": "http://127.0.0.1:2113/streams/someStream/1",
+          "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/0",
           "relation": "edit"
         },
         {
-          "uri": "http://127.0.0.1:2113/streams/someStream/1",
-          "relation": "alternate"
-        }
-      ]
-    },
-    {
-      "eventId": "171428f2-60ba-4db9-b729-ad225ac4233e",
-      "eventType": "SomeEvent",
-      "eventNumber": 0,
-      "data": "{\"someAttribute\":\"some value\",\"someTime\":\"2015-06-07T20:40:43Z\"}",
-      "streamId": "someStream",
-      "isJson": true,
-      "isMetaData": false,
-      "isLinkMetaData": false,
-      "positionEventNumber": 0,
-      "positionStreamId": "someStream",
-      "title": "0@someStream",
-      "id": "http://127.0.0.1:2113/streams/someStream/0",
-      "updated": "2015-06-08T01:40:43.939103Z",
-      "author": {
-        "name": "EventStore"
-      },
-      "summary": "SomeEvent",
-      "links": [
-        {
-          "uri": "http://127.0.0.1:2113/streams/someStream/0",
-          "relation": "edit"
-        },
-        {
-          "uri": "http://127.0.0.1:2113/streams/someStream/0",
+          "uri": "http://localhost:2113/streams/testSliceReaderEach05785261404948ec8f947ba5d8d3768a-5181607c-66ac-4264-9969-3db4277f564c/0",
           "relation": "alternate"
         }
       ]

@@ -21,36 +21,43 @@ module EventStore
             end
           end
 
+          def self.parse(json_text)
+            data = parse_json(json_text)
+
+            build(data)
+          end
+
+          def self.parse_json(json_text)
+            logger.trace "Parsing JSON"
+            logger.data "(#{json_text.class}) #{json_text}"
+
+            data = JSON.parse(json_text)
+
+            logger.debug "Parsed JSON"
+
+            deserialize(data)
+          end
+
           def self.deserialize(entry_data)
-            logger.trace "Deserializing entry (Type: #{entry_data['eventType']}, ID: #{entry_data['id']}, Stream Name: #{entry_data['stream_name']})"
+            logger.trace "Deserializing entry data (Type: #{entry_data['eventType']}, ID: #{entry_data['eventId']}, Stream Name: #{entry_data['streamId']})"
+            logger.data "(#{entry_data.class}) #{entry_data}"
 
             data = {}
 
-            data['id'] = entry_data['eventId']
-            data['type'] = entry_data['eventType']
-            data['stream_name'] = entry_data['streamId']
-            data['position'] = entry_data['eventNumber']
-            data['relative_position'] = entry_data['positionEventNumber']
-            data['uri'] = entry_data['id']
             data['created_time'] = entry_data['updated']
 
-            entry_data_data = entry_data['data']
-            if entry_data_data && !entry_data_data.empty?
-              data['data'] = deserialize_embedded_data(entry_data_data)
-            end
+            content = entry_data['content']
 
-            entry_data_metadata = entry_data['metaData']
-            if entry_data_metadata && !entry_data_metadata.empty?
-              data['metadata'] = deserialize_embedded_data(entry_data_metadata)
-              data['metadata']['event_id'] = entry_data['eventId']
-              data['metadata']['source_stream_name'] = entry_data['streamId']
-            end
+            data['type'] = content['eventType']
+            data['stream_name'] = content['eventStreamId']
+            data['number'] = content['eventNumber']
+            data['data'] = content['data']
+            data['metadata'] = content['metadata']
 
-            instance = build(data)
+            logger.debug "Deserialized entry data (Type: #{data['type']}, ID: #{data['id']}, Stream Name: #{data['stream_name']})"
+            logger.data "(#{data.class}) #{data}"
 
-            logger.debug "Deserialized entry (Type: #{instance.type}, ID: #{instance.id}, Stream Name: #{instance.stream_name})"
-
-            instance
+            data
           end
 
           def self.deserialize_embedded_data(data_text)
