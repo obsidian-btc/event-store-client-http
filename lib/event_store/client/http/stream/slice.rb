@@ -32,7 +32,6 @@ module EventStore
             data = parse_json(json_text)
             logger.data "(#{data.class}) #{data}"
 
-
             build(data)
           end
 
