@@ -43,6 +43,12 @@ module EventStore
             end
           end
 
+          def each(&action)
+            entries.reverse_each do |event_json_data|
+              action.call event_json_data
+            end
+          end
+
           def self.logger
             Telemetry::Logger.get self
           end

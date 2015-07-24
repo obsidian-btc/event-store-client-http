@@ -4,17 +4,18 @@ describe "Read Events" do
 
   stream_name = Fixtures::EventData.write 2, 'testEntryReader'
 
-  stream_reader = EventStore::Client::HTTP::StreamReader.build stream_name, slice_size: 1
+  event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_size: 1
 
-  uri = stream_reader.start_uri
+  events = []
+  event_reader.each do |event|
+    events << event
+  end
 
-  slice = stream_reader.next(uri)
-
-  raw_events = slice.entries
-
-  reader = EventStore::Client::HTTP::EventReader.build
-
-  reader.each_event(raw_events) do |event|
+  events.each do |event|
     logger(__FILE__).data event.inspect
+  end
+
+  specify "Events are read" do
+    assert(events.length == 2)
   end
 end
