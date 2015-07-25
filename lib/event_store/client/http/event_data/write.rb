@@ -21,7 +21,7 @@ module EventStore
             }
 
             json_data['data'] = Casing::Camel.!(data) if data
-            json_data['metaData'] = Casing::Camel.!(metadata) if metadata
+            json_data['metadata'] = Casing::Camel.!(metadata) if metadata
 
             json_data
           end

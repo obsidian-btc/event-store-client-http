@@ -67,45 +67,62 @@ module Fixtures
       end
     end
 
-    def self.example(id=nil)
-      id ||= '10000000-0000-0000-0000-000000000000'
+    module Write
+      module JSON
+        def self.data
+          {
+            'eventId' => '10000000-0000-0000-0000-000000000000',
+            'eventType' => 'SomeType',
+            'data' => {'someAttribute' => 'some value'},
+            'metadata' => Metadata::JSON.data
+          }
+        end
 
-      event_data = EventStore::Client::HTTP::EventData::Write.build
-
-      event_data.id = id
-
-      event_data.type = 'SomeEvent'
-
-      event_data.data = {
-        'some_attribute' => 'some value'
-      }
-
-      event_data.metadata = Metadata.data
-
-      event_data
-    end
-
-    def self.write(count=nil, stream_name=nil)
-      count ||= 1
-
-      stream_name = Fixtures::Stream.name stream_name
-      path = "/streams/#{stream_name}"
-
-      post = EventStore::Client::HTTP::Request::Post.build
-
-      count.times do |i|
-        i += 1
-
-        id = ID.get(i)
-
-        event_data = Fixtures::EventData::Batch.example(id)
-
-        json_text = event_data.serialize
-
-        post_response = post.! json_text, path
+        def self.text
+          data.to_json
+        end
       end
 
-      stream_name
+      def self.example(id=nil)
+        id ||= '10000000-0000-0000-0000-000000000000'
+
+        event_data = EventStore::Client::HTTP::EventData::Write.build
+
+        event_data.id = id
+
+        event_data.type = 'SomeType'
+
+        event_data.data = {
+          'some_attribute' => 'some value'
+        }
+
+        event_data.metadata = Metadata.data
+
+        event_data
+      end
+
+      def self.write(count=nil, stream_name=nil)
+        count ||= 1
+
+        stream_name = Fixtures::Stream.name stream_name
+        path = "/streams/#{stream_name}"
+
+        post = EventStore::Client::HTTP::Request::Post.build
+
+        count.times do |i|
+          i += 1
+
+          id = ID.get(i)
+
+          event_data = Fixtures::EventData::Batch.example(id)
+
+          json_text = event_data.serialize
+
+          post_response = post.! json_text, path
+        end
+
+        stream_name
+      end
     end
 
     module Batch
@@ -115,7 +132,7 @@ module Fixtures
         event_data = EventStore::Client::HTTP::EventData.build
 
         batch = EventStore::Client::HTTP::EventData::Batch.build
-        batch.add EventData.example(id)
+        batch.add EventData::Write.example(id)
         batch
       end
 
@@ -133,7 +150,52 @@ module Fixtures
     end
 
     def self.json_text
-      '"metaData":{"someMetaAttribute":"some metadata value"}'
+      '"metadata":{"someMetaAttribute":"some metadata value"}'
+    end
+
+    module JSON
+      def self.data
+        {
+          'someMetaAttribute' => 'some metadata value'
+        }
+      end
+    end
+  end
+
+  module Slice
+    module JSON
+      def self.data
+        {
+          "links" => [
+            {
+              "uri" => "http://localhost:2113/streams/someStream/2/forward/2",
+              "relation" => "previous"
+            }
+          ],
+          "entries" => [
+            {
+              "links" => [
+                {
+                  "uri" => "http://localhost:2113/streams/someStream/1",
+                  "relation" => "edit"
+                }
+              ]
+            },
+            {
+              "links" => [
+                {
+                  "uri" => "http://localhost:2113/streams/someStream/0",
+                  "relation" => "edit"
+                }
+              ]
+            }
+          ]
+        }
+      end
+
+      def self.text
+        data.to_json
+      end
     end
   end
 end
