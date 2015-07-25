@@ -69,9 +69,11 @@ module Fixtures
 
     module Write
       module JSON
-        def self.data
+        def self.data(id=nil)
+          id ||= ID.get
+
           {
-            'eventId' => '10000000-0000-0000-0000-000000000000',
+            'eventId' => id,
             'eventType' => 'SomeType',
             'data' => {'someAttribute' => 'some value'},
             'metadata' => Metadata::JSON.data
@@ -84,7 +86,7 @@ module Fixtures
       end
 
       def self.example(id=nil)
-        id ||= '10000000-0000-0000-0000-000000000000'
+        id ||= ID.get
 
         event_data = EventStore::Client::HTTP::EventData::Write.build
 
@@ -127,9 +129,7 @@ module Fixtures
 
     module Batch
       def self.example(id=nil)
-        id ||= '10000000-0000-0000-0000-000000000000'
-
-        event_data = EventStore::Client::HTTP::EventData.build
+        id ||= ID.get
 
         batch = EventStore::Client::HTTP::EventData::Batch.build
         batch.add EventData::Write.example(id)
@@ -147,10 +147,6 @@ module Fixtures
       {
         some_meta_attribute: 'some metadata value'
       }
-    end
-
-    def self.json_text
-      '"metadata":{"someMetaAttribute":"some metadata value"}'
     end
 
     module JSON

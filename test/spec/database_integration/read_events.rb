@@ -2,7 +2,7 @@ require_relative './database_integration_init'
 
 describe "Read Events" do
 
-  stream_name = Fixtures::EventData.write 2, 'testEntryReader'
+  stream_name = Fixtures::EventData::Write.write 2, 'testEventReader'
 
   event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_size: 1
 
