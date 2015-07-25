@@ -71,7 +71,7 @@
               logger.debug "GET Response\nURI: #{uri}\nStatus: #{(response.status_code.to_s + " " + response.status_message).rstrip}"
 
               response.body_handler do |body|
-                slice = Stream::Slice.build body.to_s
+                slice = Slice.build body.to_s
                 ext_blk.call(slice)
 
                 recurse_callback.call(slice) if block_given?

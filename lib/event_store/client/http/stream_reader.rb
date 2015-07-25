@@ -70,7 +70,7 @@
 
           logger.data "(#{body.class}) #{body}"
 
-          Stream::Slice.parse(body).tap do
+          Slice.parse(body).tap do
             logger.trace "Got (URI: #{uri})"
           end
         end

@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
 module Fixtures
-  StreamName = EventStore::Client::HTTP::Stream::Name
+  StreamName = EventStore::Client::StreamName
 end
 
 describe "Stream Name" do
