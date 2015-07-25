@@ -131,8 +131,6 @@ module Fixtures
       def self.example(id=nil)
         id ||= ID.get
 
-        event_data = EventStore::Client::HTTP::EventData.build
-
         batch = EventStore::Client::HTTP::EventData::Batch.build
         batch.add EventData::Write.example(id)
         batch
