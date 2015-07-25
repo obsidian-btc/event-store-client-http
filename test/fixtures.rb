@@ -149,10 +149,6 @@ module Fixtures
       }
     end
 
-    def self.json_text
-      '"metadata":{"someMetaAttribute":"some metadata value"}'
-    end
-
     module JSON
       def self.data
         {
