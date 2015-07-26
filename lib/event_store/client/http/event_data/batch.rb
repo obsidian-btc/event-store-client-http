@@ -12,14 +12,20 @@ module EventStore
             new.tap do |instance|
               Telemetry::Logger.configure instance
 
+              event_data = [event_data] unless event_data.is_a? Array
+
               if !!event_data
-                instance.add event_data
+                instance.concat event_data
               end
             end
           end
 
           def list
             @list ||= []
+          end
+
+          def concat(event_data)
+            list.concat event_data
           end
 
           def length
