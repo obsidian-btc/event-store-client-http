@@ -5,14 +5,29 @@ module EventStore
         class Batch
           dependency :logger, Telemetry::Logger
 
-          def self.build
+          def self.build(event_data=nil)
+
+
+
             new.tap do |instance|
               Telemetry::Logger.configure instance
+
+              if !!event_data
+                instance.add event_data
+              end
             end
           end
 
           def list
             @list ||= []
+          end
+
+          def length
+            list.length
+          end
+
+          def any?(event_data)
+            list.include? event_data
           end
 
           def add(event_data)
