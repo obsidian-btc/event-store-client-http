@@ -5,10 +5,6 @@
         dependency :request, EventStore::Client::HTTP::Request::Post
         dependency :logger, Telemetry::Logger
 
-        def batch
-          @batch ||= EventStore::Client::HTTP::EventData::Batch.build
-        end
-
         def self.build
           logger.trace "Building event writer"
 
@@ -20,30 +16,38 @@
         end
 
         def write(event_data, stream_name, expected_version: nil)
-          logger.trace "Writing entry (Stream Name: #{stream_name})"
+          logger.trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.debug "(#{event_data.class}) #{event_data.inspect}"
 
-          json_text = serialize(event_data)
+          batch = batch(event_data)
+
+          write_batch(batch, stream_name, expected_version: expected_version).tap do
+            logger.debug "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          end
+        end
+
+        def write_batch(batch, stream_name, expected_version: nil)
+          logger.trace "Writing batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+
+          json_text = batch.serialize
           logger.data "(#{json_text.class}) #{json_text}"
 
           path = path(stream_name)
 
           request.!(json_text, path, expected_version: expected_version).tap do |instance|
-            logger.debug "Wrote entry (Stream Name: #{stream_name})"
+            logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          end
+        end
+
+        def batch(event_data)
+          logger.trace "Constructing batch"
+          EventStore::Client::HTTP::EventData::Batch.build(event_data).tap do
+            logger.debug "Constructed batch"
           end
         end
 
         def path(stream_name)
           "/streams/#{stream_name}"
-        end
-
-        def serialize(event_data)
-          reset_batch
-          batch.add event_data
-          batch.serialize
-        end
-
-        def reset_batch
-          @batch = nil
         end
 
         def self.logger

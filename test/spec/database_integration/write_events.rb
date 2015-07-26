@@ -17,7 +17,7 @@ describe "Write Event" do
 
   logger(__FILE__).data read_data.inspect
 
-  describe "Event is read" do
+  describe "Event is written" do
     specify "Stream Name" do
       assert(read_data.stream_name == stream_name)
     end
