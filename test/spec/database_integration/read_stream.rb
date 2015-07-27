@@ -6,7 +6,6 @@ describe "Read Slices" do
   reader = EventStore::Client::HTTP::StreamReader.build stream_name, slice_size: 1
 
   slices = []
-
   reader.each do |slice|
     slices << slice
   end
