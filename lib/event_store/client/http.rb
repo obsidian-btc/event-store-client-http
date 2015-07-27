@@ -28,5 +28,7 @@ require 'event_store/client/http/request/post'
 require 'event_store/client/http/request/get'
 
 require 'event_store/client/http/stream_reader'
+require 'event_store/client/http/stream_reader/continuous'
+
 require 'event_store/client/http/event_reader'
 require 'event_store/client/http/event_writer'

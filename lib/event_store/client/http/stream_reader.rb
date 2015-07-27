@@ -2,25 +2,11 @@
   module Client
     module HTTP
       class StreamReader
-        attr_accessor :stream_name
-        attr_writer :starting_position
         attr_reader :start_uri
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
-
-        def starting_position
-          @starting_position ||= 0
-        end
-
-        def slice_size
-          @slice_size ||= 20
-        end
-
-        def next?
-          !!next_uri
-        end
 
         def initialize(start_uri)
           @start_uri = start_uri
@@ -37,17 +23,21 @@
 
           new(start_uri).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
+            instance.specialize_request
+
             Telemetry::Logger.configure instance
             logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
           end
         end
+
+        virtual :specialize_request
 
         def each(uri=nil, &action)
           uri ||= start_uri
 
           self.next_uri = uri
 
-          while next?
+          while continue?
             slice = self.next(next_uri)
             action.call slice
           end
@@ -55,13 +45,25 @@
           nil
         end
 
+        def continue?
+          !!next_uri
+        end
+
         def next(uri)
           slice = get(uri)
 
-          self.next_uri = slice.links.next_uri
-          logger.debug "Next URI: #{next_uri}"
+          advance_uri(slice) if advance_uri?(slice)
 
           return slice
+        end
+
+        def advance_uri?(slice)
+          true
+        end
+
+        def advance_uri(slice)
+          self.next_uri = slice.links.next_uri
+          logger.debug "Next URI: #{next_uri}"
         end
 
         def get(uri)

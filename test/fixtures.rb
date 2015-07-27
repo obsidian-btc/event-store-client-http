@@ -19,11 +19,17 @@ module Fixtures
   end
 
   module Stream
-    def self.name(category=nil, id=nil)
+    def self.name(category=nil, id=nil, random: nil)
       category ||= 'test'
-      id ||= UUID.random
-      category_name = "#{category}#{UUID.random.gsub('-', '')}"
-      "#{category_name}-#{id}"
+      random ||= true
+
+      if random
+        category_name = "#{category}#{UUID.random.gsub('-', '')}"
+        id ||= UUID.random
+        return "#{category_name}-#{id}"
+      else
+        return category
+      end
     end
   end
 

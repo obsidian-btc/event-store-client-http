@@ -1,25 +1,41 @@
- module EventStore
+module EventStore
   module Client
     module HTTP
       class EventReader
-        attr_reader :stream_reader
+        attr_reader :stream_name
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(stream_reader)
-          @stream_reader = stream_reader
+        def starting_position
+          @starting_position ||= 0
+        end
+
+        def slice_size
+          @slice_size ||= 20
+        end
+
+        def initialize(stream_name, starting_position=nil, slice_size=nil)
+          @stream_name = stream_name
+          @starting_position = starting_position
+          @slice_size = slice_size
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil)
           logger.trace "Building event reader"
 
-          stream_reader = EventStore::Client::HTTP::StreamReader.build stream_name, starting_position: starting_position, slice_size: slice_size
-
-          new(stream_reader).tap do |instance|
+          new(stream_name, starting_position, slice_size).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
             Telemetry::Logger.configure instance
             logger.debug "Built event reader"
+          end
+        end
+
+        def subscribe(&action)
+          stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
+
+          stream_reader.each do |slice|
+            read_slice(slice, &action)
           end
         end
 

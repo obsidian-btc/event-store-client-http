@@ -44,8 +44,6 @@ module EventStore
             logger.debug list.inspect
 
             list.map do |event_data|
-              logger.debug '*****'
-              logger.debug event_data.inspect
               event_data.json_formatted_data
             end
           end

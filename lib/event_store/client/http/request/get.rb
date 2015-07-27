@@ -5,6 +5,8 @@ module EventStore
         class Get
           include Request
 
+          attr_accessor :long_poll
+
           def !(path)
             logger.trace "Getting from #{path}"
 
@@ -28,6 +30,7 @@ module EventStore
             request = Net::HTTP::Get.new(path)
 
             set_event_store_accept_header(request)
+            set_event_store_long_poll_header(request) if long_poll
 
             request
           end
@@ -38,6 +41,21 @@ module EventStore
 
           def set_event_store_accept_header(request)
             request['Accept'] = media_type
+          end
+
+          def enable_long_poll
+            self.long_poll = true
+          end
+
+          def set_event_store_long_poll_header(request)
+            request['ES-LongPoll'] = Defaults.long_poll_duration
+          end
+
+          module Defaults
+            def self.long_poll_duration
+              duration = ENV['LONG_POLL_DURATION']
+              duration || 15
+            end
           end
         end
       end
