@@ -4,11 +4,9 @@
       class StreamReader
         class Terminal < StreamReader
           def each(&action)
-            enumerator = to_enum
-
             enumerator.each do |slice|
               action.call slice
-              raise StopIteration if slice.links.next_uri.nil?
+              raise StopIteration if next_uri.nil?
             end
           end
         end

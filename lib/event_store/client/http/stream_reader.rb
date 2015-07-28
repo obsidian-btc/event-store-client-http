@@ -47,6 +47,7 @@
           end
         end
         alias :enum_for :to_enum
+        alias :enumerator :to_enum
 
         def next(uri)
           slice = get(uri)
@@ -57,7 +58,7 @@
         end
 
         def advance_uri(uri)
-          self.next_uri = uri
+          self.next_uri = uri unless uri.nil?
           logger.debug "Next URI: #{next_uri}"
         end
 
