@@ -41,7 +41,8 @@
             logger.trace "Enumerating"
             loop do
               slice = self.next(next_uri)
-              y << slice
+              next_uri = slice.links.next_uri
+              y << [slice, next_uri]
             end
             logger.debug "Enumerated"
           end
