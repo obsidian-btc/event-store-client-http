@@ -2,13 +2,14 @@
   module Client
     module HTTP
       class StreamReader
-        class Continuous < StreamReader
+        class Terminal < StreamReader
           def each(&action)
-            request.enable_long_poll
             enumerator.each do |slice, next_uri|
               action.call slice
 
-              advance_uri(next_uri) if next_uri
+              raise StopIteration if next_uri.nil?
+
+              advance_uri(next_uri)
             end
           end
         end
