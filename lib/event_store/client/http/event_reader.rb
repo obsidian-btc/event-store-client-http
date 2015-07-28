@@ -39,7 +39,9 @@ module EventStore
           end
         end
 
-        def each(&action)
+        def read(&action)
+          stream_reader = StreamReader.build stream_name, starting_position: starting_position, slice_size: slice_size
+
           stream_reader.each do |slice|
             read_slice(slice, &action)
           end

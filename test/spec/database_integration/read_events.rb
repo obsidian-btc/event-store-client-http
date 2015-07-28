@@ -7,7 +7,7 @@ describe "Read Events" do
   event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_size: 1
 
   events = []
-  event_reader.each do |event|
+  event_reader.read do |event|
     events << event
   end
 
