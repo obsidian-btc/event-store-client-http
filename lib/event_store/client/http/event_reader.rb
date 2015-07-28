@@ -33,15 +33,15 @@ module EventStore
 
         def subscribe(&action)
           stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
-
-          stream_reader.each do |slice|
-            read_slice(slice, &action)
-          end
+          each_slice(stream_reader, &action)
         end
 
         def read(&action)
           stream_reader = StreamReader::Terminal.build stream_name, starting_position: starting_position, slice_size: slice_size
+          each_slice(stream_reader, &action)
+        end
 
+        def each_slice(stream_reader, &action)
           stream_reader.each do |slice|
             read_slice(slice, &action)
           end
