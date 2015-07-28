@@ -7,12 +7,8 @@
             request.enable_long_poll
           end
 
-          def continue?
-            true
-          end
-
-          def advance_uri?(slice)
-            !!slice.links.next_uri
+          def advance_uri(next_uri)
+            self.next_uri = (next_uri || self.next_uri)
           end
         end
       end

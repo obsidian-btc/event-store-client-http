@@ -52,18 +52,14 @@
         def next(uri)
           slice = get(uri)
 
-          advance_uri(slice) if advance_uri?(slice)
+          advance_uri(slice.links.next_uri)
+          logger.debug "Next URI: #{next_uri}"
 
           return slice
         end
 
-        def advance_uri?(slice)
-          true
-        end
-
-        def advance_uri(slice)
-          self.next_uri = slice.links.next_uri
-          logger.debug "Next URI: #{next_uri}"
+        def advance_uri(next_uri)
+          self.next_uri = next_uri
         end
 
         def get(uri)
