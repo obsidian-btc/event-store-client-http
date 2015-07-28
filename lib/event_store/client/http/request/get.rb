@@ -43,12 +43,12 @@ module EventStore
             request['Accept'] = media_type
           end
 
-          def enable_long_poll
-            self.long_poll = true
-          end
-
           def set_event_store_long_poll_header(request)
             request['ES-LongPoll'] = Defaults.long_poll_duration
+          end
+
+          def enable_long_poll
+            self.long_poll = true
           end
 
           module Defaults
