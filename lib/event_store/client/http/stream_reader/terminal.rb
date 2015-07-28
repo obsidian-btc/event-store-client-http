@@ -6,6 +6,10 @@
           def each(&action)
             enumerator.each do |slice|
               action.call slice
+
+              next_uri = slice.links.next_uri
+              advance_uri(next_uri)
+
               raise StopIteration if next_uri.nil?
             end
           end
