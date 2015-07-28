@@ -23,43 +23,42 @@
 
           new(start_uri).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
-            instance.specialize_request
 
             Telemetry::Logger.configure instance
             logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
           end
         end
 
-        virtual :specialize_request
+        virtual :each
 
-        def each(uri=nil, &action)
-          uri ||= start_uri
+        def advance_uri(next_uri)
+          self.next_uri = (next_uri || self.next_uri)
+        end
 
-          self.next_uri = uri
-
-          while continue?
-            slice = self.next(next_uri)
-            action.call slice
+        def to_enum
+          Enumerator.new do |y|
+            self.next_uri = start_uri
+            logger.trace "Enumerating"
+            loop do
+              slice = self.next(next_uri)
+              next_uri = slice.links.next_uri
+              y << [slice, next_uri]
+            end
+            logger.debug "Enumerated"
           end
-
-          nil
         end
-
-        def continue?
-          !!next_uri
-        end
+        alias :enum_for :to_enum
+        alias :enumerator :to_enum
 
         def next(uri)
           slice = get(uri)
 
-          advance_uri(slice.links.next_uri)
-          logger.debug "Next URI: #{next_uri}"
-
           return slice
         end
 
-        def advance_uri(next_uri)
-          self.next_uri = next_uri
+        def advance_uri(uri)
+          self.next_uri = uri
+          logger.debug "Next URI: #{next_uri}"
         end
 
         def get(uri)
