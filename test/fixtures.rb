@@ -122,7 +122,7 @@ module Fixtures
 
           id = ID.get(i)
 
-          event_data = Fixtures::EventData::Batch.example(id)
+          event_data = Controls::EventData::Batch.example(id)
 
           json_text = event_data.serialize
 

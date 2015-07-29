@@ -6,11 +6,11 @@ describe "Write Batch of Events" do
 
   writer = EventStore::Client::HTTP::EventWriter.build
 
-  id_1 = Fixtures::ID.get 1
-  id_2 = Fixtures::ID.get 2
+  id_1 = Controls::ID.get 1
+  id_2 = Controls::ID.get 2
 
-  event_data_1 = Fixtures::EventData::Write.example(id_1)
-  event_data_2 = Fixtures::EventData::Write.example(id_2)
+  event_data_1 = Controls::EventData::Write.example(id_1)
+  event_data_2 = Controls::EventData::Write.example(id_2)
 
   event_data_1.data['some_attribute'] = id_1
   event_data_2.data['some_attribute'] = id_2
