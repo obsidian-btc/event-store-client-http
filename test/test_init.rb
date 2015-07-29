@@ -5,9 +5,13 @@ ENV['LOG_LEVEL'] ||= 'trace'
 puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
-require_relative './fixtures.rb'
+
 require 'runner'
 require 'fixture'
+
+require 'controls/slice'
+require 'controls/event_data'
+require 'controls/event_data/storage'
 
 TestLogger = Telemetry::Logger.get 'Test Output'
 

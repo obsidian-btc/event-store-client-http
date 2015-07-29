@@ -13,6 +13,7 @@ prox_gem 'settings'
 prox_gem 'set_attributes'
 prox_gem 'virtual'
 prox_gem 'casing'
+prox_gem 'controls'
 
 source 'https://rubygems.org'
 
