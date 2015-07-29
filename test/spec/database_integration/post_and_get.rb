@@ -1,10 +1,10 @@
 require_relative './database_integration_init'
 
 describe "Posting event data" do
-  stream_name = Fixtures::Stream.name "testWrite"
+  stream_name = Controls::StreamName.get "testPostAndGet"
   path = "/streams/#{stream_name}"
 
-  data = Fixtures::EventData::Batch.json_text
+  data = Controls::EventData::Batch::JSON.text
 
   post = EventStore::Client::HTTP::Request::Post.build
   post_response = post.! data, path
@@ -28,6 +28,6 @@ describe "Posting event data" do
     metadata = content['metadata']
 
     assert(data == {"someAttribute" => "some value"})
-    assert(metadata == {"someMetaAttribute" => "some metadata value"})
+    assert(metadata == {"someMetaAttribute" => "some meta value"})
   end
 end
