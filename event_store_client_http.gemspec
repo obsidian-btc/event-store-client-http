@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.name = 'event_store_client_http_vertx'
-  s.summary = 'HTTP Client for EventStore for Vert.x'
+  s.name = 'event_store_client_http'
+  s.summary = 'HTTP Client for EventStore'
   s.version = '0.0.0'
   s.authors = ['']
   s.require_paths = ['lib']
