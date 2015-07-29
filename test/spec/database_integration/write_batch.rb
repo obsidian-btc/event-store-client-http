@@ -1,7 +1,7 @@
 require_relative './database_integration_init'
 
 describe "Write Batch of Events" do
-  stream_name = Fixtures::Stream.name 'testEventWriter'
+  stream_name = Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
   writer = EventStore::Client::HTTP::EventWriter.build

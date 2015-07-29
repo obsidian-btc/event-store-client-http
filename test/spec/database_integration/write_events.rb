@@ -1,7 +1,7 @@
 require_relative './database_integration_init'
 
 describe "Write Event" do
-  stream_name = Fixtures::Stream.name 'testEventWriter'
+  stream_name = Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
   writer = EventStore::Client::HTTP::EventWriter.build
@@ -31,7 +31,7 @@ describe "Write Event" do
     end
 
     specify "Metadata" do
-      assert(read_data.metadata == {'some_meta_attribute' => 'some metadata value'})
+      assert(read_data.metadata == {'some_meta_attribute' => 'some meta value'})
     end
   end
 end

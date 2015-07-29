@@ -1,9 +1,9 @@
 require_relative './database_integration_init'
 
 describe "Read Slices" do
-  stream_name = Fixtures::EventData::Write.write 2, 'testStreamReader'
+  stream_name = Controls::EventData::Write::Storage.write 2, 'testStreamReader'
 
-  reader = EventStore::Client::HTTP::StreamReader.build stream_name, slice_size: 1
+  reader = EventStore::Client::HTTP::StreamReader::Terminal.build stream_name, slice_size: 1
 
   slices = []
   reader.each do |slice|

@@ -6,6 +6,6 @@ describe "Event Data Serialization" do
 
     json_text = batch.serialize
 
-    assert(json_text = Fixtures::EventData::Batch.json_text)
+    assert(json_text = Controls::EventData::Batch::JSON.text)
   end
 end
