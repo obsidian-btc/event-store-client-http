@@ -5,11 +5,13 @@ module EventStore
         module EventData
           module Read
             module JSON
-              def self.data(number=nil, time=nil)
-                number ||= 0
-
+              def self.data(number=nil, time: time, stream_name: nil, metadata: nil)
                 reference_time = ::Controls::Time.reference
+
+                number ||= 0
                 time ||= reference_time
+                stream_name ||= StreamName.reference
+                metadata ||= EventData::Metadata::JSON.data
 
                 {
                   'updated' => reference_time,
@@ -21,7 +23,7 @@ module EventStore
                       'someAttribute' => 'some value',
                       'someTime' => time
                     },
-                    'metadata' => EventData::Metadata::JSON.data
+                    'metadata' => metadata
                   },
                   'links' => [
                     {
