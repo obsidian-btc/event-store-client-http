@@ -5,7 +5,7 @@ module EventStore
         module EventData
           module Read
             module JSON
-              def self.data(number=nil, time: time, stream_name: nil, metadata: nil)
+              def self.data(number=nil, time: nil, stream_name: nil, metadata: nil)
                 reference_time = ::Controls::Time.reference
 
                 number ||= 0
@@ -18,7 +18,7 @@ module EventStore
                   'content' => {
                     'eventType' => 'SomeEvent',
                     'eventNumber' => number,
-                    'eventStreamId' => 'someStream',
+                    'eventStreamId' => stream_name,
                     'data' => {
                       'someAttribute' => 'some value',
                       'someTime' => time
@@ -27,7 +27,7 @@ module EventStore
                   },
                   'links' => [
                     {
-                      'uri' => "http://localhost:2113/streams/someStream/#{number}",
+                      'uri' => "http://localhost:2113/streams/#{stream_name}/#{number}",
                       'relation' => 'edit'
                     }
                   ]
