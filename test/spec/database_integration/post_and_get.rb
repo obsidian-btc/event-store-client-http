@@ -1,10 +1,10 @@
 require_relative './database_integration_init'
 
 describe "Posting event data" do
-  stream_name = Controls::StreamName.get "testPostAndGet"
+  stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testPostAndGet"
   path = "/streams/#{stream_name}"
 
-  data = Controls::EventData::Batch::JSON.text
+  data = EventStore::Client::HTTP::Controls::EventData::Batch::JSON.text
 
   post = EventStore::Client::HTTP::Request::Post.build
   post_response = post.! data, path

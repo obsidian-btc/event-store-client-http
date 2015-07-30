@@ -1,7 +1,7 @@
 require_relative './database_integration_init'
 
 describe "Write Event" do
-  stream_name = Controls::StreamName.get 'testEventWriter'
+  stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
   writer = EventStore::Client::HTTP::EventWriter.build
