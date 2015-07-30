@@ -1,7 +1,7 @@
 require_relative './database_integration_init'
 
 describe "Write Batch of Events" do
-  stream_name = Controls::StreamName.get 'testEventWriter'
+  stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
   writer = EventStore::Client::HTTP::EventWriter.build
@@ -9,8 +9,8 @@ describe "Write Batch of Events" do
   id_1 = Controls::ID.get 1
   id_2 = Controls::ID.get 2
 
-  event_data_1 = Controls::EventData::Write.example(id_1)
-  event_data_2 = Controls::EventData::Write.example(id_2)
+  event_data_1 = EventStore::Client::HTTP::Controls::EventData::Write.example(id_1)
+  event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example(id_2)
 
   event_data_1.data['some_attribute'] = id_1
   event_data_2.data['some_attribute'] = id_2

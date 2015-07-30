@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
 describe "Stream Slice" do
-  json_text = Controls::Slice::JSON.text
+  json_text = EventStore::Client::HTTP::Controls::Slice::JSON.text
   slice = EventStore::Client::HTTP::Slice.parse(json_text)
 
   specify "Entries" do

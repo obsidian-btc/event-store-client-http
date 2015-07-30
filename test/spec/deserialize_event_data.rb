@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
 describe "Deserialized Entry" do
-  json_text = Controls::EventData::Read::JSON.text
+  json_text = EventStore::Client::HTTP::Controls::EventData::Read::JSON.text
   event_data = EventStore::Client::HTTP::EventData::Read.parse json_text
 
   reference_time = Controls::Time.reference
