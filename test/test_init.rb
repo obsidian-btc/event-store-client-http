@@ -9,9 +9,7 @@ require_relative '../init.rb'
 require 'runner'
 require 'fixture'
 
-require 'controls/slice'
-require 'controls/event_data'
-require 'controls/event_data/storage'
+require 'event_store/client/http/controls'
 
 TestLogger = Telemetry::Logger.get 'Test Output'
 
