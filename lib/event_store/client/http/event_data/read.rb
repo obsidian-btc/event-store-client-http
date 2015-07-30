@@ -24,15 +24,15 @@ module EventStore
             deserialize(data)
           end
 
-          def self.deserialize(entry_data)
-            logger.trace "Deserializing entry data (Type: #{entry_data['eventType']}, ID: #{entry_data['eventId']}, Stream Name: #{entry_data['streamId']})"
-            logger.data "(#{entry_data.class}) #{entry_data}"
+          def self.deserialize(event_data)
+            logger.trace "Deserializing entry data (Type: #{event_data['eventType']}, ID: #{event_data['eventId']}, Stream Name: #{event_data['streamId']})"
+            logger.data "(#{event_data.class}) #{event_data}"
 
             data = {}
 
-            data['created_time'] = entry_data['updated']
+            data['created_time'] = event_data['updated']
 
-            content = entry_data['content']
+            content = event_data['content']
 
             data['type'] = content['eventType']
             data['number'] = content['eventNumber']
@@ -42,7 +42,7 @@ module EventStore
 
             data['metadata'] = format(content['metadata'])
 
-            links = entry_data['links']
+            links = event_data['links']
 
             data['links'] = Links.build(links)
 
