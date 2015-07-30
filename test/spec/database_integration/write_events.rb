@@ -6,7 +6,7 @@ describe "Write Event" do
 
   writer = EventStore::Client::HTTP::EventWriter.build
 
-  event_data = Controls::EventData::Write.example
+  event_data = EventStore::Client::HTTP::Controls::EventData::Write.example
 
   writer.write event_data, stream_name
 
