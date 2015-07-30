@@ -11,8 +11,6 @@ module EventStore
                 reference_time = ::Controls::Time.reference
                 time ||= reference_time
 
-                id = ::Controls::ID.get(increment + 1)
-
                 {
                   'updated' => reference_time,
                   'content' => {
