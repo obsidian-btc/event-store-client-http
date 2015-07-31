@@ -1,6 +1,6 @@
 require_relative './subscription_init'
 
-stream_name = Controls::StreamName.get "testSubscription"
+stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testSubscription"
 logger(__FILE__).info "Stream name: #{stream_name}"
 
 stream_name_file = 'tmp/stream_name'
@@ -20,8 +20,8 @@ i = 0
 loop do
   i += 1
 
-  id = Controls::ID.get i
-  event_data = Controls::EventData::Write.example id
+  id = ::Controls::ID.get i
+  event_data = EventStore::Client::HTTP::Controls::EventData::Write.example id
   result = writer.write event_data, stream_name
 
   logger(__FILE__).data result.inspect
