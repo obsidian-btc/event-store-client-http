@@ -15,6 +15,12 @@
           end
         end
 
+        def self.configure(receiver)
+          instance = build
+          receiver.writer = instance
+          instance
+        end
+
         def write(event_data, stream_name, expected_version: nil)
           logger.trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           logger.debug "(#{event_data.class}) #{event_data.inspect}"
