@@ -11,7 +11,9 @@ describe "Writing the Expected Version Number" do
 
     event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example
 
-    writer.write event_data_2, stream_name, expected_version: 0
+    specify "Succeeds" do
+      writer.write event_data_2, stream_name, expected_version: 0
+    end
   end
 
   describe "Wrong Version" do
