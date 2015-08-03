@@ -7,7 +7,7 @@ describe "Writing the Expected Version Number" do
     writer = EventStore::Client::HTTP::EventWriter.build
 
     event_data_1 = EventStore::Client::HTTP::Controls::EventData::Write.example
-    result = writer.write event_data_1, stream_name
+    writer.write event_data_1, stream_name
 
     event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example
 
@@ -20,7 +20,7 @@ describe "Writing the Expected Version Number" do
     writer = EventStore::Client::HTTP::EventWriter.build
 
     event_data_1 = EventStore::Client::HTTP::Controls::EventData::Write.example
-    result = writer.write event_data_1, stream_name
+    writer.write event_data_1, stream_name
 
     event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example
 
