@@ -1,7 +1,7 @@
 require_relative './database_integration_init'
 
 describe "Read Slices" do
-  stream_name = EventStore::Client::HTTP::Controls::EventData::Write::Storage.write 2, 'testStreamReader'
+  stream_name = EventStore::Client::HTTP::Controls::Writer.write 2, 'testStreamReader'
 
   reader = EventStore::Client::HTTP::StreamReader::Terminal.build stream_name, slice_size: 1
 
