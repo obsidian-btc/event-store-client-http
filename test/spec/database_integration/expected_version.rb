@@ -3,7 +3,6 @@ require_relative './database_integration_init'
 describe "Writing the Expected Version Number" do
   describe "Right Version" do
     stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testWrongVersion'
-    path = "/streams/#{stream_name}"
 
     writer = EventStore::Client::HTTP::EventWriter.build
 
@@ -17,7 +16,6 @@ describe "Writing the Expected Version Number" do
 
   describe "Wrong Version" do
     stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testWrongVersion'
-    path = "/streams/#{stream_name}"
 
     writer = EventStore::Client::HTTP::EventWriter.build
 
