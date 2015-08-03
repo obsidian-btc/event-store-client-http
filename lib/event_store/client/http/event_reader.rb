@@ -31,14 +31,30 @@ module EventStore
           end
         end
 
+        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil)
+          instance = build stream_name, starting_position: starting_position, slice_size: slice_size
+          receiver.reader = instance
+          instance
+        end
+
         def subscribe(&action)
+          logger.trace "Subscribing events (Stream Name: #{stream_name})"
+
           stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
           each_slice(stream_reader, &action)
+
+          logger.debug "Subscribe completed (Stream Name: #{stream_name})"
+          nil
         end
 
         def read(&action)
+          logger.trace "Reading events (Stream Name: #{stream_name})"
+
           stream_reader = StreamReader::Terminal.build stream_name, starting_position: starting_position, slice_size: slice_size
           each_slice(stream_reader, &action)
+
+          logger.debug "Read events (Stream Name: #{stream_name})"
+          nil
         end
 
         def each_slice(stream_reader, &action)

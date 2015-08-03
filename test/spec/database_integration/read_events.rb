@@ -1,7 +1,6 @@
 require_relative './database_integration_init'
 
 describe "Read Events" do
-
   stream_name = EventStore::Client::HTTP::Controls::EventData::Write::Storage.write 2, 'testEventReader'
 
   event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_size: 1
