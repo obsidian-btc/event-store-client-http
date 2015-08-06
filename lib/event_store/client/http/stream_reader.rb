@@ -29,6 +29,12 @@
           end
         end
 
+        def self.configure(receiver, stream_name, starting_position: starting_position, slice_size: slice_size)
+          instance = build stream_name, starting_position: starting_position, slice_size: slice_size
+          receiver.stream_reader = instance
+          instance
+        end
+
         virtual :each
 
         def advance_uri(next_uri)

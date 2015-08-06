@@ -9,6 +9,6 @@ end
 
 event_reader = EventStore::Client::HTTP::Subscription.build stream_name, slice_size: 1
 
-event_reader.subscribe do |event|
+event_reader.each do |event|
   logger(__FILE__).info event.inspect
 end

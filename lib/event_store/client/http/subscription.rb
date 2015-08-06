@@ -9,7 +9,7 @@ module EventStore
           logger.debug "Configured dependencies"
         end
 
-        def subscribe(&action)
+        def each(&action)
           logger.trace "Subscribing events (Stream Name: #{stream_name})"
 
           each_slice(stream_reader, &action)

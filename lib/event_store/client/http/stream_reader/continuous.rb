@@ -3,12 +3,6 @@
     module HTTP
       class StreamReader
         class Continuous < StreamReader
-          def self.configure(receiver, stream_name, starting_position: starting_position, slice_size: slice_size)
-            instance = build stream_name, starting_position: starting_position, slice_size: slice_size
-            receiver.stream_reader = instance
-            instance
-          end
-
           def each(&action)
             request.enable_long_poll
             enumerator.each do |slice, next_uri|
