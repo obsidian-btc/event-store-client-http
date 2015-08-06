@@ -5,6 +5,7 @@ module EventStore
         attr_reader :stream_name
 
         dependency :request, EventStore::Client::HTTP::Request::Get
+        dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
         def starting_position
@@ -26,10 +27,11 @@ module EventStore
 
           new(stream_name, starting_position, slice_size).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
-            Telemetry::Logger.configure instance
             logger.debug "Built event reader"
           end
         end
+
+        virtual :configure_dependencies
 
         def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil)
           instance = build stream_name, starting_position: starting_position, slice_size: slice_size
