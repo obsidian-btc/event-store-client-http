@@ -40,7 +40,7 @@ module EventStore
         def subscribe(&action)
           logger.trace "Subscribing events (Stream Name: #{stream_name})"
 
-          stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
+          stream_reader = configure_stream_reader StreamReader::Continuous
           each_slice(stream_reader, &action)
 
           logger.debug "Subscribe completed (Stream Name: #{stream_name})"
@@ -50,7 +50,7 @@ module EventStore
         def read(&action)
           logger.trace "Reading events (Stream Name: #{stream_name})"
 
-          stream_reader = StreamReader::Terminal.build stream_name, starting_position: starting_position, slice_size: slice_size
+          stream_reader = configure_stream_reader StreamReader::Terminal
           each_slice(stream_reader, &action)
 
           logger.debug "Read events (Stream Name: #{stream_name})"
@@ -68,6 +68,14 @@ module EventStore
             entry = get_entry(event_json_data)
             action.call entry
           end
+        end
+
+        def configure_stream_reader(stream_reader_cls)
+          start_uri = stream_reader_cls.slice_path stream_name, starting_position, slice_size
+          stream_reader = stream_reader_cls.new start_uri
+          stream_reader.logger = logger
+          stream_reader.request = request
+          stream_reader
         end
 
         def get_entry(event_json_data)

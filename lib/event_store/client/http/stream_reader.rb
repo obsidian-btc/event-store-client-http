@@ -1,4 +1,4 @@
- module EventStore
+module EventStore
   module Client
     module HTTP
       class StreamReader
