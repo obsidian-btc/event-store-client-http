@@ -12,4 +12,3 @@ event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_si
 event_reader.subscribe do |event|
   logger(__FILE__).info event.inspect
 end
-
