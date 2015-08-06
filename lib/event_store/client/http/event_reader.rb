@@ -27,6 +27,7 @@ module EventStore
 
           new(stream_name, starting_position, slice_size).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
+            instance.configure_dependencies
             logger.debug "Built event reader"
           end
         end
@@ -37,26 +38,6 @@ module EventStore
           instance = build stream_name, starting_position: starting_position, slice_size: slice_size
           receiver.reader = instance
           instance
-        end
-
-        def subscribe(&action)
-          logger.trace "Subscribing events (Stream Name: #{stream_name})"
-
-          stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
-          each_slice(stream_reader, &action)
-
-          logger.debug "Subscribe completed (Stream Name: #{stream_name})"
-          nil
-        end
-
-        def read(&action)
-          logger.trace "Reading events (Stream Name: #{stream_name})"
-
-          stream_reader = StreamReader::Terminal.build stream_name, starting_position: starting_position, slice_size: slice_size
-          each_slice(stream_reader, &action)
-
-          logger.debug "Read events (Stream Name: #{stream_name})"
-          nil
         end
 
         def each_slice(stream_reader, &action)
