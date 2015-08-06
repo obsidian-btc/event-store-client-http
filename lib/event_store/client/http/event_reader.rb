@@ -5,6 +5,7 @@ module EventStore
         attr_reader :stream_name
 
         dependency :request, EventStore::Client::HTTP::Request::Get
+        dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
         def starting_position
@@ -26,6 +27,7 @@ module EventStore
 
           new(stream_name, starting_position, slice_size).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance
+            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size
             Telemetry::Logger.configure instance
             logger.debug "Built event reader"
           end
@@ -37,23 +39,12 @@ module EventStore
           instance
         end
 
-        def subscribe(&action)
-          logger.trace "Subscribing events (Stream Name: #{stream_name})"
+        def each(&action)
+          logger.trace "Enumerating events (Stream Name: #{stream_name})"
 
-          stream_reader = StreamReader::Continuous.build stream_name, starting_position: starting_position, slice_size: slice_size
           each_slice(stream_reader, &action)
 
-          logger.debug "Subscribe completed (Stream Name: #{stream_name})"
-          nil
-        end
-
-        def read(&action)
-          logger.trace "Reading events (Stream Name: #{stream_name})"
-
-          stream_reader = StreamReader::Terminal.build stream_name, starting_position: starting_position, slice_size: slice_size
-          each_slice(stream_reader, &action)
-
-          logger.debug "Read events (Stream Name: #{stream_name})"
+          logger.debug "Completed enumerating events (Stream Name: #{stream_name})"
           nil
         end
 

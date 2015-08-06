@@ -1,9 +1,9 @@
 module EventStore
   module Client
     module HTTP
-      class Subscription < EventReader
+      class Reader < EventReader
         def self.stream_reader
-          StreamReader::Continuous
+          StreamReader::Terminal
         end
       end
     end

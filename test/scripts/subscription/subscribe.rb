@@ -7,9 +7,8 @@ rescue
   raise "Stream name file is missing (tmp/stream_name). It's created by the write_events_periodically.rb script, which must be run concurrently with #{__FILE__}."
 end
 
-event_reader = EventStore::Client::HTTP::EventReader.build stream_name, slice_size: 1
+event_reader = EventStore::Client::HTTP::Subscription.build stream_name, slice_size: 1
 
-event_reader.subscribe do |event|
+event_reader.each do |event|
   logger(__FILE__).info event.inspect
 end
-

@@ -32,4 +32,8 @@ require 'event_store/client/http/stream_reader/continuous'
 require 'event_store/client/http/stream_reader/terminal'
 
 require 'event_store/client/http/event_reader'
+
+require 'event_store/client/http/reader'
+require 'event_store/client/http/subscription'
+
 require 'event_store/client/http/event_writer'
