@@ -33,12 +33,20 @@ module EventStore
         end
 
         pure_virtual :configure_dependencies
-        pure_virtual :each
 
         def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil)
           instance = build stream_name, starting_position: starting_position, slice_size: slice_size
           receiver.reader = instance
           instance
+        end
+
+        def each(&action)
+          logger.trace "Enumerating events (Stream Name: #{stream_name})"
+
+          each_slice(stream_reader, &action)
+
+          logger.debug "Completed enumerating events (Stream Name: #{stream_name})"
+          nil
         end
 
         def each_slice(stream_reader, &action)

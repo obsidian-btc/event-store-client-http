@@ -8,15 +8,6 @@ module EventStore
           Telemetry::Logger.configure self
           logger.debug "Configured dependencies"
         end
-
-        def each(&action)
-          logger.trace "Reading events (Stream Name: #{stream_name})"
-
-          each_slice(stream_reader, &action)
-
-          logger.debug "Read events (Stream Name: #{stream_name})"
-          nil
-        end
       end
     end
   end
