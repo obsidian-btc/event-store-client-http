@@ -25,7 +25,7 @@ module EventStore
           end
 
           def self.deserialize(event_data)
-            logger.trace "Deserializing entry data (Type: #{event_data['eventType']}, ID: #{event_data['eventId']}, Stream Name: #{event_data['streamId']})"
+            logger.trace "Deserializing event data"
             logger.data "(#{event_data.class}) #{event_data}"
 
             data = {}
