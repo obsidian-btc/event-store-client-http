@@ -1,4 +1,4 @@
-require_relative './subscription_init'
+require_relative '../subscription_init'
 
 stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testSubscription"
 logger(__FILE__).info "Stream name: #{stream_name}"
