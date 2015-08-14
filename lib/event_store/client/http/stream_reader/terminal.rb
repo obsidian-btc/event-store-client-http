@@ -5,8 +5,6 @@
         class Terminal < StreamReader
           def each(&action)
             enumerator.each do |slice, next_uri|
-              raise StopIteration if slice.nil?
-
               action.call slice
 
               raise StopIteration if next_uri.nil?

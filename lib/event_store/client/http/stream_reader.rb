@@ -45,35 +45,28 @@
           Enumerator.new do |y|
             self.next_uri = start_uri
             logger.trace "Enumerating"
+
             loop do
-              slice = self.next(next_uri)
-              next_uri = get_next_uri(slice)
+              slice = next_slice(next_uri)
+
+              raise StopIteration if slice.nil?
+
+              next_uri = slice.links.next_uri
               y << [slice, next_uri]
             end
+
             logger.debug "Enumerated"
           end
         end
         alias :enum_for :to_enum
         alias :enumerator :to_enum
 
-        def next(uri)
-          get(uri)
-        end
-
-        def get_next_uri(slice)
-          next_uri = nil
-          unless slice.nil?
-            next_uri = slice.links.next_uri
-          end
-          next_uri
-        end
-
         def advance_uri(uri)
           self.next_uri = uri
           logger.debug "Next URI: #{next_uri}"
         end
 
-        def get(uri)
+        def get_slice(uri)
           logger.trace "Getting (URI: #{uri})"
           body, _ = request.! uri
 
@@ -83,6 +76,7 @@
             logger.trace "Got (URI: #{uri})"
           end
         end
+        alias :next_slice :get_slice
 
         def parse(body)
           slice = nil
