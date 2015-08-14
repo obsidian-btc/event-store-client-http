@@ -1,10 +1,8 @@
-require_relative './database_integration_init'
+require_relative './not_found_init'
 
 describe "Get a Stream that Doesn't Exist" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testNotFound"
   path = "/streams/#{stream_name}"
-
-  data = EventStore::Client::HTTP::Controls::EventData::Batch::JSON.text
 
   get = EventStore::Client::HTTP::Request::Get.build
   body_text, response = get.! path
