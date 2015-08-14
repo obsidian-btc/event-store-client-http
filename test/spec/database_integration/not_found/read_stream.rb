@@ -2,13 +2,15 @@ require_relative './not_found_init'
 
 describe "Read Slices from a Stream that Doesn't Exist" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testNotFound"
-  path = "/streams/#{stream_name}"
 
-  reader = EventStore::Client::HTTP::StreamReader::Terminal.build stream_name, slice_size: 1
+  reader = EventStore::Client::HTTP::StreamReader::Terminal.build stream_name
 
+  enumerated = false
   reader.each do |slice|
-    specify "Slices are read" do
-      assert(slice.nil?)
-    end
+    enumerated = true
+  end
+
+  specify "Slices are not enumerated" do
+    refute(enumerated)
   end
 end
