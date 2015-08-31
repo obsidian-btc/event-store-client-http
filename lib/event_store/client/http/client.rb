@@ -8,7 +8,7 @@ module EventStore
         dependency :logger, Telemetry::Logger
 
         def self.build
-          logger.trace "Building HTTP client"
+          logger.debug "Building HTTP client"
 
           new.tap do |instance|
             Settings.instance.set(instance)
