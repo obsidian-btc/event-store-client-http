@@ -17,7 +17,7 @@ describe "Posting event data" do
   end
 
   specify "Get responds with successful status" do
-    assert(get_response.is_a? Net::HTTPOK)
+    assert(get_response.status_code == 200)
   end
 
   specify "Written data is retrieved" do
