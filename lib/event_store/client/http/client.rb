@@ -50,11 +50,16 @@ module EventStore
         def !(request)
           request["Host"] = host
 
+          logger.data "Writing request to #{socket}:\n\n#{request}"
           socket.write request
           yield if block_given?
 
           builder = ::HTTP::Protocol::Response.builder
-          builder << socket.gets until builder.finished_headers?
+          until builder.finished_headers?
+            next_line = socket.gets
+            logger.data "Read #{next_line.chomp}"
+            builder << next_line
+          end
           response = builder.message
 
           reset_socket if response["Connection"] == "close"
