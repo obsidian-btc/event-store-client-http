@@ -7,6 +7,8 @@ module EventStore
 
         dependency :logger, Telemetry::Logger
 
+        attr_writer :socket
+
         def self.build
           logger.debug "Building HTTP client"
 
@@ -65,7 +67,7 @@ module EventStore
 
         def reset_socket
           socket.close
-          @socket = nil
+          self.socket = nil
         end
 
         def self.logger
