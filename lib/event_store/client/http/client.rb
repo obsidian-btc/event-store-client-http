@@ -55,20 +55,6 @@ module EventStore
           response
         end
 
-        def client_instance
-          unless @client_instance
-            logger.trace "Building Net::HTTP instance (Host: #{host}, Port: #{port})"
-            @client_instance = Net::HTTP.new(host, port)
-            logger.debug "Built Net::HTTP instance (Host: #{host}, Port: #{port})"
-          end
-
-          @client_instance
-        end
-
-        def method_missing(method_name, *args, &block)
-          client_instance.send method_name, *args, &block
-        end
-
         def self.logger
           @logger ||= Telemetry::Logger.get self
         end

@@ -1,5 +1,4 @@
 require 'json'
-require 'net/http'
 require 'http/protocol'
 
 require 'dependency'
