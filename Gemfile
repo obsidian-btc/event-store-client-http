@@ -26,3 +26,6 @@ gem 'minitest-spec-context', '0.0.3'
 
 gem 'rainbow'
 
+group :debug do
+  gem 'pry'
+end
