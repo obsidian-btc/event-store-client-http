@@ -32,7 +32,12 @@ module EventStore
           response = self.! request
 
           content_length = response["Content-Length"].to_i
-          body = socket.read content_length
+
+          body = ""
+          until body.size == content_length
+            packet = socket.read content_length
+            body << packet
+          end
 
           [response, body]
         end
