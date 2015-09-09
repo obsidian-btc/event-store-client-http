@@ -13,6 +13,7 @@ module EventStore
           logger.debug "Building HTTP client"
 
           new.tap do |instance|
+            Telemetry::Logger.configure instance
             Settings.instance.set(instance)
             logger.trace "Built HTTP client"
           end
