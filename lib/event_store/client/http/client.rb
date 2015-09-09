@@ -40,6 +40,21 @@ module EventStore
           [response, body]
         end
 
+        def post(request, data)
+          request["Host"] = host
+          request["Content-Length"] = data.size
+          socket = TCPSocket.new host, port
+          socket.write request
+          socket.write data
+
+          builder = ::HTTP::Protocol::Response.builder
+          builder << socket.gets until builder.finished_headers?
+          response = builder.message
+          socket.close if response["Connection"] == "close"
+
+          response
+        end
+
         def client_instance
           unless @client_instance
             logger.trace "Building Net::HTTP instance (Host: #{host}, Port: #{port})"

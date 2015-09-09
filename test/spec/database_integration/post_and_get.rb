@@ -13,7 +13,7 @@ describe "Posting event data" do
   body_text, get_response = get.! "#{path}/0"
 
   specify "Post responds with successful status" do
-    assert(post_response.is_a? Net::HTTPCreated)
+    assert(post_response.status_code == 201)
   end
 
   specify "Get responds with successful status" do
