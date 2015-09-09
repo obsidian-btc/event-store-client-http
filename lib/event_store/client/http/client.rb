@@ -26,33 +26,46 @@ module EventStore
         end
 
         def get(request)
-          request["Host"] = host
-          socket = TCPSocket.new host, port
-          socket.write request
+          response = self.! request
 
-          builder = ::HTTP::Protocol::Response.builder
-          builder << socket.gets until builder.finished_headers?
-          response = builder.message
           content_length = response["Content-Length"].to_i
-          socket.close if response["Connection"] == "close"
-
           body = socket.read content_length
+
           [response, body]
         end
 
         def post(request, data)
-          request["Host"] = host
           request["Content-Length"] = data.size
-          socket = TCPSocket.new host, port
+
+          response = self.! request do
+            socket.write data
+          end
+
+          response
+        end
+
+        def !(request)
+          request["Host"] = host
+
           socket.write request
-          socket.write data
+          yield if block_given?
 
           builder = ::HTTP::Protocol::Response.builder
           builder << socket.gets until builder.finished_headers?
           response = builder.message
-          socket.close if response["Connection"] == "close"
+
+          reset_socket if response["Connection"] == "close"
 
           response
+        end
+
+        def socket
+          @socket ||= TCPSocket.new host, port
+        end
+
+        def reset_socket
+          socket.close
+          @socket = nil
         end
 
         def self.logger
