@@ -40,6 +40,9 @@ module EventStore
           end
 
           [response, body]
+
+        ensure
+          socket.close if response["Connection"] == "close"
         end
 
         def post(request, data)
@@ -50,6 +53,9 @@ module EventStore
           end
 
           response
+
+        ensure
+          socket.close if response["Connection"] == "close"
         end
 
         def !(request)
