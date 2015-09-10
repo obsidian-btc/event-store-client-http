@@ -39,10 +39,9 @@ module EventStore
             body << packet
           end
 
-          [response, body]
+          close_socket if response["Connection"] == "close"
 
-        ensure
-          socket.close if response["Connection"] == "close"
+          [response, body]
         end
 
         def post(request, data)
@@ -52,10 +51,9 @@ module EventStore
             socket.write data
           end
 
-          response
+          close_socket if response["Connection"] == "close"
 
-        ensure
-          socket.close if response["Connection"] == "close"
+          response
         end
 
         def !(request)
@@ -78,6 +76,11 @@ module EventStore
 
         def socket
           @socket ||= establish_connection self
+        end
+
+        def close_socket
+          socket.close
+          self.socket = nil
         end
 
         def establish_connection(receiver)
