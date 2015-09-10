@@ -73,18 +73,15 @@ module EventStore
           end
           response = builder.message
 
-          reset_socket if response["Connection"] == "close"
-
           response
         end
 
         def socket
-          @socket ||= TCPSocket.new host, port
+          @socket ||= establish_connection self
         end
 
-        def reset_socket
-          socket.close
-          self.socket = nil
+        def establish_connection(receiver)
+          receiver.socket = TCPSocket.new host, port
         end
 
         def self.logger
