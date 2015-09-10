@@ -7,7 +7,7 @@ module EventStore
 
         dependency :logger, Telemetry::Logger
 
-        attr_writer :socket
+        attr_writer :connector
 
         def self.build
           logger.debug "Building HTTP client"
@@ -20,11 +20,8 @@ module EventStore
         end
 
         def self.configure(receiver)
-          logger.trace "Configuring client (Receiver: #{receiver})"
           client = build
           receiver.client = client
-          logger.debug "Configured client (Receiver: #{receiver})"
-
           client
         end
 
@@ -48,6 +45,7 @@ module EventStore
           request["Content-Length"] = data.size
 
           response = self.! request do
+            logger.data "Writing data to #{socket}:\n\n#{data}"
             socket.write data
           end
 
@@ -59,7 +57,8 @@ module EventStore
         def !(request)
           request["Host"] = host
 
-          logger.data "Writing request to #{socket}:\n\n#{request}"
+          logger.trace "Writing request to #{socket.inspect}"
+          logger.data "Request headers:\n\n#{request}"
           socket.write request
           yield if block_given?
 
@@ -74,17 +73,21 @@ module EventStore
           response
         end
 
+        def connector
+          @connector or ->{connect}
+        end
+
         def socket
-          @socket ||= establish_connection self
+          @socket ||= connector.()
+        end
+
+        def connect
+          TCPSocket.new host, port
         end
 
         def close_socket
           socket.close
-          self.socket = nil
-        end
-
-        def establish_connection(receiver)
-          receiver.socket = TCPSocket.new host, port
+          @socket = nil
         end
 
         def self.logger
