@@ -22,7 +22,7 @@ module EventStore
           def post(data, path, expected_version=nil)
             request = build_request(path, expected_version)
 
-            response = session.post(request, data)
+            response = session.!(request, request_body: data)
 
             if "#{response.status_code} #{response.reason_phrase}" == "400 Wrong expected EventNumber"
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (Path: #{path})"

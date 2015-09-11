@@ -25,52 +25,47 @@ module EventStore
           session
         end
 
-        def get(request)
-          response = self.! request
+        def !(request, request_body: "", response_body: "")
+          request["Host"] = host
+          request["Content-Length"] = request_body.size
 
+          logger.trace "Writing request to #{socket.inspect}"
+          logger.data "Request headers:\n\n#{request}"
+
+          socket.write request
+          write_request_body request_body
+          response = start_response
           content_length = response["Content-Length"].to_i
-
-          body = ""
-          until body.size == content_length
-            packet = socket.read content_length
-            body << packet
-          end
-
-          close_socket if response["Connection"] == "close"
-
-          return body, response
-        end
-
-        def post(request, data)
-          request["Content-Length"] = data.size
-
-          response = self.! request do
-            logger.data "Writing data to #{socket}:\n\n#{data}"
-            socket.write data
-          end
+          read_response_body response_body, content_length
 
           close_socket if response["Connection"] == "close"
 
           response
         end
 
-        def !(request)
-          request["Host"] = host
+        def write_request_body(request_body)
+          return if request_body.empty?
+          logger.data "Writing data to #{socket}:\n\n#{request_body}"
+          socket.write request_body
+        end
 
-          logger.trace "Writing request to #{socket.inspect}"
-          logger.data "Request headers:\n\n#{request}"
-          socket.write request
-          yield if block_given?
-
+        def start_response
           builder = ::HTTP::Protocol::Response.builder
           until builder.finished_headers?
             next_line = socket.gets
             logger.data "Read #{next_line.chomp}"
             builder << next_line
           end
-          response = builder.message
+          builder.message
+        end
 
-          response
+        def read_response_body(response_body, content_length)
+          amount_read = 0
+          while amount_read < content_length
+            packet = socket.read content_length
+            response_body << packet
+            amount_read += packet.size
+          end
         end
 
         def connector
