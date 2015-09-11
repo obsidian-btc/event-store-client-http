@@ -21,11 +21,11 @@ module EventStore
         end
 
         module Configure
-          def configure(receiver, attr_name=nil)
+          def configure(receiver, attr_name=nil, session: nil)
             attr_name ||= :request
 
             logger.trace "Configuring request (Receiver: #{receiver})"
-            request = build
+            request = build session
             receiver.send "#{attr_name}=", request
             logger.debug "Configured request (Receiver: #{receiver})"
 

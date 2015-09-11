@@ -12,7 +12,7 @@
           @start_uri = start_uri
         end
 
-        def self.build(stream_name, starting_position: nil, slice_size: nil)
+        def self.build(stream_name, session: nil, starting_position: nil, slice_size: nil)
           starting_position ||= 0
           slice_size ||= 20
 
@@ -22,15 +22,15 @@
           logger.debug "Starting URI: #{start_uri}"
 
           new(start_uri).tap do |instance|
-            EventStore::Client::HTTP::Request::Get.configure instance
+            EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
             logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
           end
         end
 
-        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil)
-          instance = build stream_name, starting_position: starting_position, slice_size: slice_size
+        def self.configure(receiver, stream_name, session: nil, starting_position: nil, slice_size: nil)
+          instance = build stream_name, session: session, starting_position: starting_position, slice_size: slice_size
           receiver.stream_reader = instance
           instance
         end
