@@ -13,7 +13,7 @@ module EventStore
 
             response = post(data, path, expected_version)
 
-            logger.info "POST Response\nPath: #{path}\nStatus: #{response.status_code} #{response.status_message.rstrip}"
+            logger.info "POST Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase.rstrip}"
             logger.debug "Posted to #{path}"
 
             response
@@ -24,7 +24,7 @@ module EventStore
 
             response = client.post(request, data)
 
-            if "#{response.status_code} #{response.status_message}" == "400 Wrong expected EventNumber"
+            if "#{response.status_code} #{response.reason_phrase}" == "400 Wrong expected EventNumber"
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (Path: #{path})"
             end
 

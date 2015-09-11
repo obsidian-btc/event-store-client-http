@@ -12,7 +12,7 @@ module EventStore
 
             body, response = get(path)
 
-            logger.info "GET Response\nPath: #{path}\nStatus: #{response.status_code} #{response.status_message}"
+            logger.info "GET Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase}"
             logger.debug "Got from #{path}"
 
             logger.data "(#{body.class}) #{body}"
