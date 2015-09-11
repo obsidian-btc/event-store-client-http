@@ -38,7 +38,7 @@ module EventStore
 
           close_socket if response["Connection"] == "close"
 
-          [response, body]
+          return body, response
         end
 
         def post(request, data)

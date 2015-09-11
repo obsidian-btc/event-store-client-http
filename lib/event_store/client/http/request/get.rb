@@ -10,7 +10,7 @@ module EventStore
           def !(path)
             logger.trace "Getting from #{path}"
 
-            response, body = get(path)
+            body, response = get(path)
 
             logger.info "GET Response\nPath: #{path}\nStatus: #{response.status_code} #{response.status_message}"
             logger.debug "Got from #{path}"
