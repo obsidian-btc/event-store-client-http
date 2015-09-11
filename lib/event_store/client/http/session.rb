@@ -1,7 +1,7 @@
 module EventStore
   module Client
     module HTTP
-      class Client
+      class Session
         setting :host
         setting :port
 
@@ -10,19 +10,19 @@ module EventStore
         attr_writer :connector
 
         def self.build
-          logger.debug "Building HTTP client"
+          logger.debug "Building HTTP session"
 
           new.tap do |instance|
             Telemetry::Logger.configure instance
             Settings.instance.set(instance)
-            logger.trace "Built HTTP client"
+            logger.trace "Built HTTP session"
           end
         end
 
         def self.configure(receiver)
-          client = build
-          receiver.client = client
-          client
+          session = build
+          receiver.session = session
+          session
         end
 
         def get(request)

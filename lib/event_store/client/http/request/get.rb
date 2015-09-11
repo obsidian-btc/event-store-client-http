@@ -22,7 +22,7 @@ module EventStore
 
           def get(path)
             request = build_request(path)
-            client.get(request)
+            session.get(request)
           end
 
           def build_request(path)
