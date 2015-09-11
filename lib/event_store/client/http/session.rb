@@ -26,7 +26,7 @@ module EventStore
         end
 
         def !(request, request_body: "", response_body: "")
-          request["Host"] = host
+          request.headers.merge! request_headers
           request["Content-Length"] = request_body.size
 
           logger.trace "Writing request to #{socket.inspect}"
@@ -66,6 +66,15 @@ module EventStore
             response_body << packet
             amount_read += packet.size
           end
+        end
+
+        def request_headers
+          @request_headers ||=
+            begin
+              headers = ::HTTP::Protocol::Request::Headers.new
+              headers["Host"] = host
+              headers
+            end
         end
 
         def connector

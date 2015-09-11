@@ -5,11 +5,11 @@
         dependency :request, EventStore::Client::HTTP::Request::Post
         dependency :logger, Telemetry::Logger
 
-        def self.build
+        def self.build(session: nil)
           logger.trace "Building event writer"
 
           new.tap do |instance|
-            EventStore::Client::HTTP::Request::Post.configure instance
+            EventStore::Client::HTTP::Request::Post.configure instance, session: session
             Telemetry::Logger.configure instance
             logger.debug "Built event writer"
           end

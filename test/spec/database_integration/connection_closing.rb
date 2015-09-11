@@ -1,20 +1,26 @@
 require_relative './database_integration_init'
 
 describe "HTTP connection closing" do
-  stream_name = EventStore::Client::HTTP::Controls::Writer.write 101, 'testEventReader'
+  connections_made = 0
 
-  event_reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1
-
-  events = []
-  event_reader.each do |event|
-    events << event
+  session = EventStore::Client::HTTP::Session.build
+  # Close after every request
+  session.request_headers["Connection"] = "close"
+  session.connector = -> do
+    connections_made += 1
+    session.connect
   end
 
-  events.each do |event|
-    logger(__FILE__).data event.inspect
-  end
+  stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'
+  writer = EventStore::Client::HTTP::EventWriter.build session: session
+  event_data = EventStore::Client::HTTP::Controls::EventData::Write.example
 
-  specify "Events are read" do
-    assert(events.length == 101)
+  specify "Socket is reset" do
+    uuid = SecureRandom.uuid
+    3.times do
+      writer.write event_data, stream_name
+    end
+
+    assert_equal 3, connections_made
   end
 end
