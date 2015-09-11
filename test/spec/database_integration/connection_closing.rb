@@ -18,4 +18,3 @@ describe "HTTP connection closing" do
     assert(events.length == 101)
   end
 end
-
