@@ -24,7 +24,7 @@ module EventStore
             request = build_request(path)
             body = ""
             response = session.request(request, response_body: body)
-            return [body, response]
+            return body, response
           end
 
           def build_request(path)
