@@ -10,6 +10,7 @@ require 'settings'
 require 'schema'
 Settings.activate
 require 'casing'
+require 'connection'
 
 require 'event_store/client'
 

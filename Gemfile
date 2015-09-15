@@ -15,6 +15,7 @@ prox_gem 'virtual'
 prox_gem 'casing'
 prox_gem 'controls'
 prox_gem 'http-protocol'
+prox_gem 'connection'
 
 source 'https://rubygems.org'
 

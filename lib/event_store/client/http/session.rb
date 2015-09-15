@@ -7,8 +7,6 @@ module EventStore
 
         dependency :logger, Telemetry::Logger
 
-        attr_writer :connector
-
         def self.build
           logger.trace "Building HTTP session"
 
@@ -38,7 +36,7 @@ module EventStore
           content_length = response["Content-Length"].to_i
           read_response_body response_body, content_length
 
-          close_socket if response["Connection"] == "close"
+          socket.close if response["Connection"] == "close"
 
           response
         end
@@ -77,22 +75,10 @@ module EventStore
             end
         end
 
-        def connector
-          @connector or ->{connect}
+        def connection
+          @connection ||= Connection::Client.build host, port
         end
-
-        def socket
-          @socket ||= connector.()
-        end
-
-        def connect
-          TCPSocket.new host, port
-        end
-
-        def close_socket
-          socket.close
-          @socket = nil
-        end
+        alias_method :socket, :connection
 
         def self.logger
           @logger ||= Telemetry::Logger.get self
