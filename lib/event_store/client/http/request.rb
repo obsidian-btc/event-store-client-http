@@ -12,7 +12,7 @@ module EventStore
         end
 
         module Build
-          def build(session=nil)
+          def build(session: nil)
             new(session).tap do |instance|
               Telemetry::Logger.configure instance
               instance.configure_session(session)
@@ -25,7 +25,7 @@ module EventStore
             attr_name ||= :request
 
             logger.trace "Configuring request (Receiver: #{receiver})"
-            request = build session
+            request = build session: session
             receiver.send "#{attr_name}=", request
             logger.debug "Configured request (Receiver: #{receiver})"
 
