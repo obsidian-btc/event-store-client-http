@@ -27,30 +27,30 @@ module EventStore
           request.headers.merge! request_headers
           request["Content-Length"] = request_body.size
 
-          logger.trace "Writing request to #{socket.inspect}"
+          logger.trace "Writing request to #{connection.inspect}"
           logger.data "Request headers:\n\n#{request}"
 
-          socket.write request
+          connection.write request
           write_request_body request_body
           response = start_response
           content_length = response["Content-Length"].to_i
           read_response_body response_body, content_length
 
-          socket.close if response["Connection"] == "close"
+          connection.close if response["Connection"] == "close"
 
           response
         end
 
         def write_request_body(request_body)
           return if request_body.empty?
-          logger.data "Writing data to #{socket}:\n\n#{request_body}"
-          socket.write request_body
+          logger.data "Writing data to #{connection}:\n\n#{request_body}"
+          connection.write request_body
         end
 
         def start_response
           builder = ::HTTP::Protocol::Response.builder
           until builder.finished_headers?
-            next_line = socket.gets
+            next_line = connection.gets
             logger.data "Read #{next_line.chomp}"
             builder << next_line
           end
@@ -60,7 +60,7 @@ module EventStore
         def read_response_body(response_body, content_length)
           amount_read = 0
           while amount_read < content_length
-            packet = socket.read content_length
+            packet = connection.read content_length
             response_body << packet
             amount_read += packet.size
           end
@@ -78,7 +78,6 @@ module EventStore
         def connection
           @connection ||= Connection::Client.build host, port
         end
-        alias_method :socket, :connection
 
         def self.logger
           @logger ||= Telemetry::Logger.get self
