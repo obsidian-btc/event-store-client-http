@@ -10,12 +10,12 @@ module EventStore
         attr_writer :connector
 
         def self.build
-          logger.debug "Building HTTP session"
+          logger.trace "Building HTTP session"
 
           new.tap do |instance|
             Telemetry::Logger.configure instance
             Settings.instance.set(instance)
-            logger.trace "Built HTTP session"
+            logger.debug "Built HTTP session"
           end
         end
 
