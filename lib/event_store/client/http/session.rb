@@ -25,7 +25,7 @@ module EventStore
           session
         end
 
-        def !(request, request_body: "", response_body: "")
+        def request(request, request_body: "", response_body: "")
           request.headers.merge! request_headers
           request["Content-Length"] = request_body.size
 
