@@ -33,7 +33,7 @@ module EventStore
           end
         end
 
-        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, session: session)
+        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, session: nil)
           instance = build stream_name, starting_position: starting_position, slice_size: slice_size, session: session
           receiver.reader = instance
           instance
