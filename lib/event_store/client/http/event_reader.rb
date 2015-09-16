@@ -22,19 +22,19 @@ module EventStore
           @slice_size = slice_size
         end
 
-        def self.build(stream_name, session: nil, starting_position: nil, slice_size: nil)
+        def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
           logger.trace "Building event reader"
 
           new(stream_name, starting_position, slice_size).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
-            stream_reader.configure instance, stream_name, session: session, starting_position: starting_position, slice_size: slice_size
+            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
             Telemetry::Logger.configure instance
             logger.debug "Built event reader"
           end
         end
 
-        def self.configure(receiver, stream_name, session: nil, starting_position: nil, slice_size: nil)
-          instance = build stream_name, session: session, starting_position: starting_position, slice_size: slice_size
+        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, session: session)
+          instance = build stream_name, starting_position: starting_position, slice_size: slice_size, session: session
           receiver.reader = instance
           instance
         end
