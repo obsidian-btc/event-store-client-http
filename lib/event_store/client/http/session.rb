@@ -69,7 +69,7 @@ module EventStore
         def request_headers
           @request_headers ||=
             begin
-              headers = ::HTTP::Protocol::Request::Headers.new
+              headers = ::HTTP::Protocol::Request::Headers.build
               headers["Host"] = host
               headers
             end
