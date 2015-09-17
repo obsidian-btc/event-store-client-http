@@ -13,32 +13,30 @@ module EventStore
 
             response = post(data, path, expected_version)
 
-            logger.info "POST Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.info "POST Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase.rstrip}"
             logger.debug "Posted to #{path}"
 
             response
           end
 
           def post(data, path, expected_version=nil)
-            request = build_request(data, path, expected_version)
+            request = build_request(path, expected_version)
 
-            response = client.request(request)
+            response = session.request(request, request_body: data)
 
-            if "#{response.code} #{response.message}" == "400 Wrong expected EventNumber"
+            if "#{response.status_code} #{response.reason_phrase}" == "400 Wrong expected EventNumber"
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (Path: #{path})"
             end
 
             response
           end
 
-          def build_request(data, path, expected_version=nil)
+          def build_request(path, expected_version=nil)
             logger.trace "Building request (Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'}"
-            request = Net::HTTP::Post.new(path)
+            request = ::HTTP::Protocol::Request.new("POST", path)
 
             set_event_store_content_type_header(request)
             set_expected_version_header(request, expected_version) if !!expected_version
-
-            request.body = data
 
             logger.debug "Built request (Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'}"
 

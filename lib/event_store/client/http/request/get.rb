@@ -10,10 +10,9 @@ module EventStore
           def !(path)
             logger.trace "Getting from #{path}"
 
-            response = get(path)
-            body = response.body
+            body, response = get(path)
 
-            logger.info "GET Response\nPath: #{path}\nStatus: #{(response.code + " " + response.message).rstrip}"
+            logger.info "GET Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase}"
             logger.debug "Got from #{path}"
 
             logger.data "(#{body.class}) #{body}"
@@ -23,11 +22,13 @@ module EventStore
 
           def get(path)
             request = build_request(path)
-            client.request(request)
+            body = ""
+            response = session.request(request, response_body: body)
+            return body, response
           end
 
           def build_request(path)
-            request = Net::HTTP::Get.new(path)
+            request = ::HTTP::Protocol::Request.new "GET", path
 
             set_event_store_accept_header(request)
             set_event_store_long_poll_header(request) if long_poll

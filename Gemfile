@@ -14,6 +14,8 @@ prox_gem 'set_attributes'
 prox_gem 'virtual'
 prox_gem 'casing'
 prox_gem 'controls'
+prox_gem 'http-protocol'
+prox_gem 'connection'
 
 source 'https://rubygems.org'
 
@@ -25,3 +27,6 @@ gem 'minitest-spec-context', '0.0.3'
 
 gem 'rainbow'
 
+group :debug do
+  gem 'pry'
+end

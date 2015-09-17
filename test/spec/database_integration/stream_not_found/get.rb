@@ -8,7 +8,7 @@ describe "Get a Stream that Doesn't Exist" do
   body_text, response = get.! path
 
   specify "Response status is 404 Not Found" do
-    assert(response.is_a? Net::HTTPNotFound)
+    assert(response.status_code == 404)
   end
 
   specify "Body is empty" do

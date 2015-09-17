@@ -8,24 +8,24 @@ module EventStore
           cls.extend Configure
 
           cls.send :dependency, :logger, Telemetry::Logger
-          cls.send :dependency, :client, EventStore::Client::HTTP::Client
+          cls.send :dependency, :session, EventStore::Client::HTTP::Session
         end
 
         module Build
-          def build(client=nil)
-            new(client).tap do |instance|
+          def build(session: nil)
+            new(session).tap do |instance|
               Telemetry::Logger.configure instance
-              instance.configure_client(client)
+              instance.configure_session(session)
             end
           end
         end
 
         module Configure
-          def configure(receiver, attr_name=nil)
+          def configure(receiver, attr_name=nil, session: nil)
             attr_name ||= :request
 
             logger.trace "Configuring request (Receiver: #{receiver})"
-            request = build
+            request = build session: session
             receiver.send "#{attr_name}=", request
             logger.debug "Configured request (Receiver: #{receiver})"
 
@@ -39,15 +39,15 @@ module EventStore
           end
         end
 
-        def initialize(client)
-          @client = client
+        def initialize(session)
+          @session = session
         end
 
-        def configure_client(client=nil)
-          if client.nil?
-            Client.configure self
+        def configure_session(session=nil)
+          if session.nil?
+            Session.configure self
           else
-            self.client = client
+            self.session = session
           end
         end
       end
