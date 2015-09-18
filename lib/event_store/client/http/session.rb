@@ -48,7 +48,7 @@ module EventStore
         end
 
         def start_response
-          builder = ::HTTP::Protocol::Response.builder
+          builder = ::HTTP::Protocol::Response::Builder.build
           until builder.finished_headers?
             next_line = connection.gets
             logger.data "Read #{next_line.chomp}"
