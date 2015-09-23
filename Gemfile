@@ -14,7 +14,7 @@ prox_gem 'set_attributes'
 prox_gem 'virtual'
 prox_gem 'casing'
 prox_gem 'controls'
-prox_gem 'http-protocol'
+prox_gem 'http_protocol'
 prox_gem 'connection'
 
 source 'https://rubygems.org'
