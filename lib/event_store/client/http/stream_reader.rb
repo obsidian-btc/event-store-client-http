@@ -68,7 +68,7 @@
 
         def get_slice(uri)
           logger.trace "Getting (URI: #{uri})"
-          body, _ = request.! uri
+          body, _ = request.(uri)
 
           logger.data "(#{body.class}) #{body}"
 

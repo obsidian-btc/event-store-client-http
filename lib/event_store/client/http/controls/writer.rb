@@ -20,7 +20,7 @@ module EventStore
 
               json_text = event_data.serialize
 
-              post_response = post.! json_text, path
+              post_response = post.(json_text, path)
             end
 
             stream_name

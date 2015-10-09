@@ -11,7 +11,7 @@ describe "Write Event" do
   writer.write event_data, stream_name
 
   get = EventStore::Client::HTTP::Request::Get.build
-  body_text, get_response = get.! "#{path}/0"
+  body_text, get_response = get.("#{path}/0")
 
   read_data = EventStore::Client::HTTP::EventData::Read.parse body_text
 
