@@ -53,7 +53,7 @@ module EventStore
           end
 
           def self.format(data)
-            Casing::Underscore.! data
+            Casing::Underscore.(data)
           end
 
           class Links

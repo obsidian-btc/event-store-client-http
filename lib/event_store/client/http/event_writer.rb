@@ -40,7 +40,7 @@
 
           path = path(stream_name)
 
-          request.!(json_text, path, expected_version: expected_version).tap do |instance|
+          request.(json_text, path, expected_version: expected_version).tap do |instance|
             logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           end
         end

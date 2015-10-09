@@ -5,7 +5,7 @@ describe "Get a Stream that Doesn't Exist" do
   path = "/streams/#{stream_name}"
 
   get = EventStore::Client::HTTP::Request::Get.build
-  body_text, response = get.! path
+  body_text, response = get.(path)
 
   specify "Response status is 404 Not Found" do
     assert(response.status_code == 404)

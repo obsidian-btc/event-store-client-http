@@ -68,7 +68,7 @@ module EventStore
 
         def get_json_text(event_json_data)
           uri = entry_link(event_json_data)
-          body_text, _ = request.! uri
+          body_text, _ = request.(uri)
           body_text
         end
 

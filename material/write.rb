@@ -55,20 +55,22 @@ module EventStore
             Request.configure self, stream_name, client
           end
 
-          def self.!(stream_name, event_data, expected_version: nil, client: nil)
+          def self.call(stream_name, event_data, expected_version: nil, client: nil)
             instance = build(stream_name, event_data, expected_version: expected_version, client: client)
-            instance.!
+            instance.()
           end
+          class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
-          def !
+          def call
             logger.trace "Writing (#{digest})"
 
             json = serialize(event_data)
 
-            request.!(json, expected_version: expected_version).tap do
+            request.(json, expected_version: expected_version).tap do
               logger.info "Wrote (#{digest})"
             end
           end
+          class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
           def serialize(event_data)
             reset_batch

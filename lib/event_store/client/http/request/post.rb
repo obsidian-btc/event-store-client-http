@@ -7,7 +7,7 @@ module EventStore
 
           include Request
 
-          def !(data, path, expected_version: nil)
+          def call(data, path, expected_version: nil)
             logger.trace "Posting to #{path}"
             logger.data data
 
@@ -18,6 +18,7 @@ module EventStore
 
             response
           end
+          alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
           def post(data, path, expected_version=nil)
             request = build_request(path, expected_version)

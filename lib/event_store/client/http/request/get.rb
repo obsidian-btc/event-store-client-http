@@ -7,7 +7,7 @@ module EventStore
 
           attr_accessor :long_poll
 
-          def !(path)
+          def call(path)
             logger.trace "Getting from #{path}"
 
             body, response = get(path)
@@ -19,6 +19,7 @@ module EventStore
 
             return body, response
           end
+          alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
           def get(path)
             request = build_request(path)
