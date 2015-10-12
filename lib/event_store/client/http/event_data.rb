@@ -6,7 +6,7 @@ module EventStore
 
         include Schema::DataStructure
 
-        dependency :uuid, UUID::Random
+        dependency :uuid, Identifier::UUID::Random
         dependency :logger, Telemetry::Logger
 
         attribute :type
@@ -14,7 +14,7 @@ module EventStore
         attribute :metadata
 
         def configure_dependencies
-          UUID::Random.configure self
+          Identifier::UUID::Random.configure self
           Telemetry::Logger.configure self
         end
 

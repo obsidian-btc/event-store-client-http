@@ -40,7 +40,7 @@ end
 
 describe "Stream ID" do
   specify "Is the UUID portion of a full stream name" do
-    id = UUID.random
+    id = Identifier::UUID.random
     stream_name = "someStream-#{id}"
 
     stream_id = Fixtures::StreamName.get_id stream_name

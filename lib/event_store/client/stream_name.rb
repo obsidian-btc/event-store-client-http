@@ -4,7 +4,7 @@ module EventStore
       extend self
 
       def stream_name(category_name, id=nil, random: nil)
-        id ||= UUID.random
+        id ||= Identifier::UUID.random
         random ||= false
 
         if random
@@ -19,7 +19,7 @@ module EventStore
       end
 
       def self.random_category_name(category_name)
-        random_id = UUID.random.gsub('-', '')
+        random_id = Identifier::UUID.random.gsub('-', '')
         "#{category_name}#{random_id}"
       end
 

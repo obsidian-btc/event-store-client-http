@@ -12,8 +12,8 @@ module EventStore
             random ||= true
 
             if random
-              category_name = "#{category}#{UUID.random.gsub('-', '')}"
-              id ||= UUID.random
+              category_name = "#{category}#{Identifier::UUID.random.gsub('-', '')}"
+              id ||= Identifier::UUID.random
               return "#{category_name}-#{id}"
             else
               return category
