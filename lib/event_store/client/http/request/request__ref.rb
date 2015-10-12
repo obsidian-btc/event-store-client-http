@@ -1,1 +1,0 @@
-/Users/sbellware/projects/obsidian/event-store-client-http/lib/event_store/client/http/request.rb
