@@ -3,6 +3,8 @@ module EventStore
     module StreamName
       extend self
 
+      STREAM_ID_MATCHER = %r{(?<stream_id>#{Identifier::UUID::MATCHER})}
+
       def stream_name(category_name, id=nil, random: nil)
         id ||= Identifier::UUID.random
         random ||= false
@@ -24,9 +26,8 @@ module EventStore
       end
 
       def self.get_id(stream_name)
-        id = stream_name.match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/i).to_s
-        id = nil if id == ''
-        id
+        match = STREAM_ID_MATCHER.match(stream_name) or return
+        match["stream_id"]
       end
     end
   end
