@@ -3,8 +3,6 @@ module EventStore
     module StreamName
       extend self
 
-      STREAM_ID_PATTERN = %r{(?<stream_id>#{Identifier::UUID::PATTERN})}
-
       def stream_name(category_name, id=nil, random: nil)
         id ||= Identifier::UUID.random
         random ||= false
@@ -26,8 +24,12 @@ module EventStore
       end
 
       def self.get_id(stream_name)
-        match = STREAM_ID_PATTERN.match(stream_name) or return
+        match = stream_id_pattern.match(stream_name) or return
         match["stream_id"]
+      end
+
+      def self.stream_id_pattern
+        %r{(?<stream_id>#{Identifier::UUID.pattern})}
       end
     end
   end
