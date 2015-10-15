@@ -23,28 +23,46 @@ module EventStore
           session
         end
 
-        def request(request, request_body: "", response_body: "")
-          request.headers.merge! request_headers
-          request["Content-Length"] = request_body.size
+        def get(request)
+          response_body = ""
 
-          logger.trace "Writing request to #{connection.inspect}"
-          logger.data "Request headers:\n\n#{request}"
+          headers = request_headers
+          request.headers.merge! headers
 
-          connection.write request
-          write_request_body request_body
+          start_request(request)
+
           response = start_response
           content_length = response["Content-Length"].to_i
           read_response_body response_body, content_length
 
           connection.close if response["Connection"] == "close"
 
+          return response_body, response
+        end
+
+        def post(request, request_body)
+          headers = request_headers request_body.size
+          request.headers.merge! headers
+
+          start_request(request)
+
+          logger.trace "Posting (Content Length: #{request_body.size})"
+          logger.data request_body
+          connection.write request_body
+          logger.debug "Posted (Content Length: #{request_body.size})"
+
+          response = start_response
+
+          connection.close if response["Connection"] == "close"
+
           response
         end
 
-        def write_request_body(request_body)
-          return if request_body.empty?
-          logger.data "Writing data to #{connection}:\n\n#{request_body}"
-          connection.write request_body
+        def start_request(request)
+          logger.trace "Transmitting request (Connection: #{connection.inspect})"
+          logger.data request
+          connection.write request
+          logger.debug "Transmitted request (Connection: #{connection.inspect})"
         end
 
         def start_response
@@ -66,13 +84,11 @@ module EventStore
           end
         end
 
-        def request_headers
-          @request_headers ||=
-            begin
-              headers = ::HTTP::Protocol::Request::Headers.build
-              headers["Host"] = host
-              headers
-            end
+        def request_headers(content_length=nil)
+          headers = ::HTTP::Protocol::Request::Headers.build
+          headers["Host"] = host
+          headers["Content-Length"] = content_length if content_length
+          headers
         end
 
         def connection

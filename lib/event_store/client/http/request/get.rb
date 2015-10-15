@@ -23,8 +23,7 @@ module EventStore
 
           def get(path)
             request = build_request(path)
-            body = ""
-            response = session.request(request, response_body: body)
+            body, response = session.get(request)
             return body, response
           end
 

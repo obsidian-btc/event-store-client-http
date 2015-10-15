@@ -6,7 +6,7 @@ module EventStore
           module Write
             module JSON
               def self.data(id=nil)
-                id ||= ::Controls::ID.get
+                id ||= ::Controls::ID.get sample: false
 
                 {
                   'eventId' => id,
@@ -22,7 +22,7 @@ module EventStore
             end
 
             def self.example(id=nil)
-              id ||= ::Controls::ID.get
+              id ||= ::Controls::ID.get sample: false
 
               event_data = EventStore::Client::HTTP::EventData::Write.build
 
