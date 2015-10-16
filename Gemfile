@@ -8,6 +8,7 @@ source 'https://gem.fury.io/obsidian/' do
   gem 'schema'
   gem 'casing'
   gem 'connection'
+  gem 'event_store-client'
   gem 'runner'
   gem 'fixture'
   gem 'controls'
