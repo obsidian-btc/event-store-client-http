@@ -19,5 +19,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'casing'
   s.add_runtime_dependency 'connection'
   s.add_runtime_dependency 'event_store-client'
-  s.add_development_dependency 'controls'
 end
