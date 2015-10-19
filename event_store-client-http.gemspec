@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name = 'event_store-client-http'
   s.summary = 'HTTP Client for EventStore'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.authors = ['']
   s.require_paths = ['lib']
   s.files = Dir.glob('{lib}/**/*')
@@ -19,5 +19,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'casing'
   s.add_runtime_dependency 'connection'
   s.add_runtime_dependency 'event_store-client'
-  s.add_runtime_dependency 'controls'
 end
