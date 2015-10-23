@@ -40,7 +40,9 @@ module EventStore
 
             data['data'] = format(content['data'])
 
-            data['metadata'] = format(content['metadata'])
+            unless content['metadata'] == ''
+              data['metadata'] = format(content['metadata'])
+            end
 
             links = event_data['links']
 
