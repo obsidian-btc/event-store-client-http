@@ -35,6 +35,13 @@ describe "Deserialized Entry" do
     assert(event_data.metadata == { 'some_meta_attribute' => 'some meta value' })
   end
 
+  specify "Empty metadata" do
+    json_text = EventStore::Client::HTTP::Controls::EventData::Read::EmptyMetadata::JSON.text
+
+    event_data = EventStore::Client::HTTP::EventData::Read.parse json_text
+    assert_equal({}, event_data.metadata)
+  end
+
   describe "Links" do
     specify "Edit" do
       edit_uri = event_data.links.edit_uri
