@@ -7,12 +7,16 @@ module EventStore
 
         dependency :logger, Telemetry::Logger
 
-        def self.build
+        def self.build(settings=nil, namespace=nil)
           logger.trace "Building HTTP session"
 
           new.tap do |instance|
             Telemetry::Logger.configure instance
-            Settings.instance.set(instance)
+
+            settings ||= Settings.instance
+            namespace = Array(namespace)
+
+            settings.set(instance, *namespace)
             logger.debug "Built HTTP session"
           end
         end
