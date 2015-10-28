@@ -15,8 +15,8 @@
           end
         end
 
-        def self.configure(receiver)
-          instance = build
+        def self.configure(receiver, session: nil)
+          instance = build(session: session)
           receiver.writer = instance
           instance
         end
