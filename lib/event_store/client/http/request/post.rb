@@ -8,13 +8,12 @@ module EventStore
           include Request
 
           def call(data, path, expected_version: nil)
-            logger.trace "Posting to #{path}"
+            logger.trace "Issuing POST (Path: #{path.inspect}, Expected Version: #{expected_version.inspect})"
             logger.data data
 
             response = post(data, path, expected_version)
 
-            logger.info "POST Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase.rstrip}"
-            logger.debug "Posted to #{path}"
+            logger.debug "Issued POST (Status Line: #{response.status_line.inspect}, Path: #{path.inspect})"
 
             response
           end
