@@ -8,14 +8,11 @@ module EventStore
           attr_accessor :long_poll
 
           def call(path)
-            logger.trace "Getting from #{path}"
+            logger.trace "Issuing GET (Path: #{path.inspect})"
 
             body, response = get(path)
 
-            logger.info "GET Response\nPath: #{path}\nStatus: #{response.status_code} #{response.reason_phrase}"
-            logger.debug "Got from #{path}"
-
-            logger.data "(#{body.class}) #{body}"
+            logger.debug "Issued GET (Status Line: #{response.status_line.inspect}, Body Size: #{body.size}, Path: #{path.inspect})"
 
             return body, response
           end
