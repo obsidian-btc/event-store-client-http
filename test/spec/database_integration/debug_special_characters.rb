@@ -8,7 +8,10 @@ describe "Write Event" do
 
   event_data = EventStore::Client::HTTP::Controls::EventData::Write.example
 
-  event_data.data['some_attribute'] = 'some valué'
+  event_data.data['some_attribute'] = "some valué"
+
+  # This works, but no idea how to ruby this
+  # event_data.data['some_attribute'] = "some valu\U+FFC3\U+FFA9"
 
   specify "Write event with special characters" do
     writer.write event_data, stream_name
