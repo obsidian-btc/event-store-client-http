@@ -30,8 +30,13 @@ module EventStore
 
               event_data.type = 'SomeType'
 
+              # event_data.data = {
+              #   'some_attribute' => 'some value'
+              # }
+
+              # DEBUG [Scott, Sun Nov 8 2015]
               event_data.data = {
-                'some_attribute' => 'some value'
+                'some_attribute' => 'some valué'
               }
 
               event_data.metadata = EventData::Metadata.data
