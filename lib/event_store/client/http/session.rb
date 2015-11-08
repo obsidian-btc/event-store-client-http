@@ -41,7 +41,7 @@ module EventStore
         end
 
         def post(request, request_body)
-          headers = request_headers request_body.size
+          headers = request_headers request_body.bytesize
           request.headers.merge! headers
 
           start_request(request)
