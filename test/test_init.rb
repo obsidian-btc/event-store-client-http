@@ -7,7 +7,6 @@ puts RUBY_DESCRIPTION
 require_relative '../init.rb'
 
 require 'runner'
-require 'fixture'
 
 require 'event_store/client/http/controls'
 

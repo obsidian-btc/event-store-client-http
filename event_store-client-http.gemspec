@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'event_store-client-http'
-  s.version = '0.1.6'
+  s.version = '0.1.7'
   s.summary = 'HTTP Client for EventStore'
   s.description = ' '
 
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'casing', '~> 0'
   s.add_runtime_dependency 'clock', '~> 0'
   s.add_runtime_dependency 'connection', '~> 0'
+  s.add_runtime_dependency 'controls', '~> 0'
   s.add_runtime_dependency 'dependency', '~> 0'
   s.add_runtime_dependency 'event_store-client', '~> 0'
   s.add_runtime_dependency 'http-protocol', '~> 0'
