@@ -1,3 +1,3 @@
 source ./library-symlinks.sh
 
-remove_lib_symlinks 'entity_store' 'event_store'
+remove_lib_symlinks 'http' 'event_store/client'

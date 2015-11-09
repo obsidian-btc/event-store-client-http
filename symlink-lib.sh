@@ -1,3 +1,3 @@
 source ./library-symlinks.sh
 
-symlink_lib 'entity_store' 'event_store'
+symlink_lib 'http' 'event_store/client'
