@@ -10,9 +10,4 @@ require 'runner'
 
 require 'event_store/client/http/controls'
 
-TestLogger = Telemetry::Logger.get 'Test Output'
-
-def logger(name)
-  name = name.split('/').last
-  Telemetry::Logger.get "-- TEST -- #{name}"
-end
+Telemetry::Logger::AdHoc.activate
