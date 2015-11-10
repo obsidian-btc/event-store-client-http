@@ -15,7 +15,7 @@ describe "Write Event" do
 
   read_data = EventStore::Client::HTTP::EventData::Read.parse body_text
 
-  logger(__FILE__).data read_data.inspect
+  __logger.data read_data.inspect
 
   describe "Event is written" do
     specify "Stream Name" do

@@ -11,7 +11,7 @@ describe "Read Events" do
   end
 
   events.each do |event|
-    logger(__FILE__).data event.inspect
+    __logger.data event.inspect
   end
 
   specify "Events are read" do
