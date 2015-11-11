@@ -19,6 +19,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'controls'
   s.add_runtime_dependency 'event_store-client'
   s.add_runtime_dependency 'http-protocol'
+  s.add_runtime_dependency 'settings'
+  s.add_runtime_dependency 'schema'
+  s.add_runtime_dependency 'casing'
 
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-spec-context'
