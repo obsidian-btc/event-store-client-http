@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.authors = ['Obsidian Software, Inc']
   s.email = 'opensource@obsidianexchange.com'
-  s.homepage = 'https://github.com/obsidian-btc/error_data'
+  s.homepage = 'https://github.com/obsidian-btc/event-store-client-http'
   s.licenses = ['MIT']
 
   s.require_paths = ['lib']
