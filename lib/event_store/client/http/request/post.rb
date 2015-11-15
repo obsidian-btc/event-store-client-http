@@ -24,7 +24,7 @@ module EventStore
 
             response = session.post(request, data)
 
-            if "#{response.status_code} #{response.reason_phrase}" == "400 Wrong expected EventNumber"
+            if "#{response.status_code} #{response.reason_phrase}" == '400 Wrong expected EventNumber'
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (Path: #{path})"
             end
 
@@ -36,7 +36,7 @@ module EventStore
             request = ::HTTP::Protocol::Request.new("POST", path)
 
             set_event_store_content_type_header(request)
-            set_expected_version_header(request, expected_version) if !!expected_version
+            set_expected_version_header(request, expected_version) unless expected_version.nil?
 
             logger.debug "Built request (Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'}"
 
@@ -52,6 +52,7 @@ module EventStore
           end
 
           def set_expected_version_header(request, expected_version)
+            expected_version = -1 if expected_version == :no_stream
             request['ES-ExpectedVersion'] = expected_version
           end
         end

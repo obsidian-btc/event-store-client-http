@@ -21,14 +21,15 @@ module EventStore
               end
             end
 
-            def self.example(id=nil)
-              id ||= ::Controls::ID.get sample: false
+            def self.example(id=nil, i: nil, type: nil)
+              id ||= ::Controls::ID.get i, sample: false
+              type ||= 'SomeType'
 
               event_data = EventStore::Client::HTTP::EventData::Write.build
 
               event_data.id = id
 
-              event_data.type = 'SomeType'
+              event_data.type = type
 
               event_data.data = {
                 'some_attribute' => 'some value'
