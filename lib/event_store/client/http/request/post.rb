@@ -33,7 +33,10 @@ module EventStore
 
           def build_request(path, expected_version=nil)
             logger.trace "Building request (Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'}"
+
             request = ::HTTP::Protocol::Request.new("POST", path)
+
+            expected_version = -1 if expected_version == self.class.no_stream_version
 
             set_event_store_content_type_header(request)
             set_expected_version_header(request, expected_version) unless expected_version.nil?
@@ -41,6 +44,10 @@ module EventStore
             logger.debug "Built request (Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'}"
 
             request
+          end
+
+          def self.no_stream_version
+            :no_stream
           end
 
           def media_type
@@ -52,7 +59,6 @@ module EventStore
           end
 
           def set_expected_version_header(request, expected_version)
-            expected_version = -1 if expected_version == :no_stream
             request['ES-ExpectedVersion'] = expected_version
           end
         end
