@@ -9,7 +9,7 @@ describe "The :no_stream Expected Version Number" do
     event_data = EventStore::Client::HTTP::Controls::EventData::Write.example
 
     specify "Succeeds" do
-      writer.write event_data, stream_name, expected_version: :no_stream
+      writer.write event_data, stream_name, expected_version: -1
     end
   end
 
@@ -25,7 +25,7 @@ describe "The :no_stream Expected Version Number" do
 
     specify "Is an error" do
       assert_raises EventStore::Client::HTTP::Request::Post::ExpectedVersionError do
-        writer.write event_data_2, stream_name, expected_version: :no_stream
+        writer.write event_data_2, stream_name, expected_version: -1
       end
     end
   end
