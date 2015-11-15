@@ -13,7 +13,7 @@ module EventStore
 
         module Build
           def build(session: nil)
-            new(session).tap do |instance|
+            new.tap do |instance|
               Telemetry::Logger.configure instance
               instance.configure_session(session)
             end
@@ -37,10 +37,6 @@ module EventStore
           def logger
             Telemetry::Logger.get self
           end
-        end
-
-        def initialize(session)
-          @session = session
         end
 
         def configure_session(session=nil)
