@@ -1,4 +1,4 @@
-require 'controls'
+require 'event_store/client/controls'
 
 require 'event_store/client/http/controls/stream_name'
 require 'event_store/client/http/controls/slice'
