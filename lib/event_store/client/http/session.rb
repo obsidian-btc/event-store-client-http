@@ -5,6 +5,8 @@ module EventStore
         setting :host
         setting :port
 
+        attr_writer :connection
+
         dependency :logger, Telemetry::Logger
 
         def self.build(settings=nil, namespace=nil)
@@ -39,7 +41,7 @@ module EventStore
           content_length = response["Content-Length"].to_i
           read_response_body response_body, content_length
 
-          connection.close if response["Connection"] == "close"
+          close_connection if response["Connection"] == "close"
 
           return response_body, response
         end
@@ -57,7 +59,7 @@ module EventStore
 
           response = start_response
 
-          connection.close if response["Connection"] == "close"
+          close_connection if response["Connection"] == "close"
 
           response
         end
@@ -93,6 +95,11 @@ module EventStore
           headers["Host"] = host
           headers["Content-Length"] = content_length if content_length
           headers
+        end
+
+        def close_connection
+          connection.close
+          self.connection = nil
         end
 
         def connection
