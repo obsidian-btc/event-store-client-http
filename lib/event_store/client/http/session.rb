@@ -96,7 +96,7 @@ module EventStore
         end
 
         def connection
-          @connection ||= Connection::Client.build host, port
+          @connection ||= Connection.client host, port
         end
 
         def self.logger
