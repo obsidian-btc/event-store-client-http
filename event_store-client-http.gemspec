@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.2.3'
 
-  s.add_runtime_dependency 'connection'
+  s.add_runtime_dependency 'connection', '~> 0.2'
   s.add_runtime_dependency 'event_store-client'
   s.add_runtime_dependency 'http-protocol'
   s.add_runtime_dependency 'settings'
