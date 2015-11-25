@@ -98,8 +98,10 @@ module EventStore
         end
 
         def close_connection
+          scheduler = connection.scheduler
           connection.close
           self.connection = nil
+          connection.scheduler = scheduler
         end
 
         def connection
