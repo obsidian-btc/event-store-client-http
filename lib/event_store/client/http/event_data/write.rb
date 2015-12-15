@@ -20,8 +20,8 @@ module EventStore
               'eventType' => type
             }
 
-            json_data['data'] = Casing::Camel.(data, convert_symbols: true) if data
-            json_data['metadata'] = Casing::Camel.(metadata, convert_symbols: true) if metadata
+            json_data['data'] = Casing::Camel.(data, symbol_to_string: true) if data
+            json_data['metadata'] = Casing::Camel.(metadata, symbol_to_string: true) if metadata
 
             json_data
           end
