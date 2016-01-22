@@ -1,16 +1,27 @@
 require_relative 'spec_init'
 
 describe "Expected Version" do
+  expected_version_header = EventStore::Client::HTTP::Controls::ExpectedVersionHeader::FieldName.example
+
+  context "When not set" do
+    specify "Does not set the ES-ExpectedVersion header" do
+      post = EventStore::Client::HTTP::Request::Post.new
+
+      headers = post.headers
+
+      assert headers[expected_version_header].nil?
+    end
+  end
+
   context "When set" do
     specify "Sets the ES-ExpectedVersion header" do
       post = EventStore::Client::HTTP::Request::Post.new
 
-      path = 'some_path'
       expected_version = 1
 
-      request = post.build_request('some_path', expected_version)
+      headers = post.headers(expected_version)
 
-      assert(request.headers.to_s.include? "ES-ExpectedVersion: #{expected_version}")
+      assert headers[expected_version_header] == expected_version
     end
   end
 
@@ -18,12 +29,12 @@ describe "Expected Version" do
     specify "Sets the ES-ExpectedVersion header to -1" do
       post = EventStore::Client::HTTP::Request::Post.new
 
-      path = 'some_path'
       expected_version = EventStore::Client::HTTP::Request::Post.no_stream_version
+      expected_header_value = EventStore::Client::HTTP::Controls::ExpectedVersionHeader::NoStream.example
 
-      request = post.build_request('some_path', expected_version)
+      headers = post.headers(expected_version)
 
-      assert(request.headers.to_s.include? "ES-ExpectedVersion: -1")
+      assert headers[expected_version_header] == expected_header_value
     end
   end
 end

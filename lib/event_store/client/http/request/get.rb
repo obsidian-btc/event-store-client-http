@@ -7,30 +7,26 @@ module EventStore
 
           attr_accessor :long_poll
 
-          def call(path)
-            logger.trace "Issuing GET (Path: #{path.inspect})"
+          def call(uri)
+            logger.trace "Issuing GET (URI: #{uri})"
 
-            body, response = get(path)
+            uri = session.build_uri(uri)
+            response = ::HTTP::Commands::Get.(uri, headers, connection: session.connection)
 
-            logger.debug "Issued GET (Status Line: #{response.status_line.inspect}, Body Size: #{body.size}, Path: #{path.inspect})"
+            body = response.body
+
+            logger.debug "Received GET (URI: #{uri})"
+            logger.data "Response body (Length: #{body.to_s.length}):\n#{body}"
 
             return body, response
           end
           alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
-          def get(path)
-            request = build_request(path)
-            body, response = session.get(request)
-            return body, response
-          end
-
-          def build_request(path)
-            request = ::HTTP::Protocol::Request.new "GET", path
-
-            set_event_store_accept_header(request)
-            set_event_store_long_poll_header(request) if long_poll
-
-            request
+          def headers
+            headers = {}
+            set_event_store_accept_header headers
+            set_event_store_long_poll_header headers if long_poll
+            headers
           end
 
           def media_type
