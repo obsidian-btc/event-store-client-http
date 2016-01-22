@@ -24,9 +24,12 @@ describe "The :no_stream Expected Version Number" do
     event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example i: 2, type: 'SecondEvent'
 
     specify "Is an error" do
-      assert_raises EventStore::Client::HTTP::Request::Post::ExpectedVersionError do
+      begin
         writer.write event_data_2, stream_name, expected_version: -1
+      rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error
       end
+
+      assert error
     end
   end
 end
