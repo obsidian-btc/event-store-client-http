@@ -11,7 +11,7 @@ describe "Get a Stream that Doesn't Exist" do
     assert(response.status_code == 404)
   end
 
-  specify "Body is empty" do
-    assert(body_text.empty?)
+  specify "Body is nil" do
+    assert(body_text.nil?)
   end
 end

@@ -2,14 +2,14 @@
   module Client
     module HTTP
       class StreamReader
-        attr_reader :start_uri
+        attr_reader :start_path
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(start_uri)
-          @start_uri = start_uri
+        def initialize(start_path)
+          @start_path = start_path
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
@@ -18,10 +18,10 @@
 
           logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
 
-          start_uri = slice_path(stream_name, starting_position, slice_size)
-          logger.debug "Starting URI: #{start_uri}"
+          start_path = slice_path(stream_name, starting_position, slice_size)
+          logger.debug "Starting URI: #{start_path}"
 
-          new(start_uri).tap do |instance|
+          new(start_path).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
@@ -43,7 +43,7 @@
 
         def to_enum
           Enumerator.new do |y|
-            self.next_uri = start_uri
+            self.next_uri = start_path
             logger.trace "Enumerating"
 
             loop do
@@ -80,10 +80,14 @@
 
         def parse(body)
           slice = nil
-          unless body.empty?
+          unless blank? body
             slice = Slice.parse(body)
           end
           slice
+        end
+
+        def blank?(body)
+          body.nil? || body.empty?
         end
 
         def self.slice_path(stream_name, starting_position, slice_size)

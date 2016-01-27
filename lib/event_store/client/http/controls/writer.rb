@@ -3,18 +3,18 @@ module EventStore
     module HTTP
       module Controls
         module Writer
-          def self.write(count=nil, stream_name=nil)
-            count ||= 1
+          def self.write(iterations=nil, stream_name=nil)
+            iterations ||= 1
 
             stream_name = Controls::StreamName.get stream_name
             path = "/streams/#{stream_name}"
 
             post = EventStore::Client::HTTP::Request::Post.build
 
-            count.times do |i|
-              i += 1
+            iterations.times do |iteration|
+              iteration += 1
 
-              id = ::Controls::ID.get(i)
+              id = ::Controls::ID.get(iteration)
 
               event_data = Controls::EventData::Batch.example(id)
 

@@ -11,8 +11,11 @@ describe "Event Data" do
     event_data = EventStore::Client::HTTP::EventData::Write.build
     event_data.assign_id
 
-    assert_raises(EventStore::Client::HTTP::EventData::IdentityError) do
+    begin
       event_data.assign_id
+    rescue EventStore::Client::HTTP::EventData::IdentityError => error
     end
+
+    assert error
   end
 end

@@ -1,5 +1,6 @@
 require 'json'
-require 'http/protocol'
+require 'uri'
+require 'http/commands'
 
 require 'dependency'
 Dependency.activate

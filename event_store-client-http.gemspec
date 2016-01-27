@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'event_store-client-http'
-  s.version = '0.0.3.4'
+  s.version = '0.0.3.5'
   s.summary = 'HTTP Client for EventStore'
   s.description = ' '
 
@@ -13,11 +13,10 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files = Dir.glob('{lib}/**/*')
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 2.2.3'
 
-  s.add_runtime_dependency 'connection', '~> 0.2'
+  s.add_runtime_dependency 'connection-client'
   s.add_runtime_dependency 'event_store-client'
-  s.add_runtime_dependency 'http-protocol'
+  s.add_runtime_dependency 'http-commands'
   s.add_runtime_dependency 'settings'
   s.add_runtime_dependency 'schema'
   s.add_runtime_dependency 'casing'
