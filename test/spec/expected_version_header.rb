@@ -1,10 +1,10 @@
 require_relative 'spec_init'
 
-describe "Expected Version" do
+context "Expected Version" do
   expected_version_header = EventStore::Client::HTTP::Controls::ExpectedVersionHeader::FieldName.example
 
   context "When not set" do
-    specify "Does not set the ES-ExpectedVersion header" do
+    test "Does not set the ES-ExpectedVersion header" do
       post = EventStore::Client::HTTP::Request::Post.new
 
       headers = post.headers
@@ -14,7 +14,7 @@ describe "Expected Version" do
   end
 
   context "When set" do
-    specify "Sets the ES-ExpectedVersion header" do
+    test "Sets the ES-ExpectedVersion header" do
       post = EventStore::Client::HTTP::Request::Post.new
 
       expected_version = 1
@@ -26,7 +26,7 @@ describe "Expected Version" do
   end
 
   context "When set to :no_stream" do
-    specify "Sets the ES-ExpectedVersion header to -1" do
+    test "Sets the ES-ExpectedVersion header to -1" do
       post = EventStore::Client::HTTP::Request::Post.new
 
       expected_version = EventStore::Client::HTTP::Request::Post.no_stream_version

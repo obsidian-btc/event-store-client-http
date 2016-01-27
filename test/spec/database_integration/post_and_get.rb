@@ -1,6 +1,6 @@
 require_relative './database_integration_init'
 
-describe "Posting event data" do
+context "Posting event data" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testPostAndGet"
   path = "/streams/#{stream_name}"
 
@@ -12,15 +12,15 @@ describe "Posting event data" do
   get = EventStore::Client::HTTP::Request::Get.build
   body_text, get_response = get.("#{path}/0")
 
-  specify "Post responds with successful status" do
+  test "Post responds with successful status" do
     assert(post_response.status_code == 201)
   end
 
-  specify "Get responds with successful status" do
+  test "Get responds with successful status" do
     assert(get_response.status_code == 200)
   end
 
-  specify "Written data is retrieved" do
+  test "Written data is retrieved" do
     body = JSON.parse(body_text)
 
     content = body['content']

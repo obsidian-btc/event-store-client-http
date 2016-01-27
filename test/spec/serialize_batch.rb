@@ -1,7 +1,7 @@
 require_relative 'spec_init'
 
-describe "Event Data Serialization" do
-  specify "Converts to JSON text" do
+context "Event Data Serialization" do
+  test "Converts to JSON text" do
     batch = EventStore::Client::HTTP::Controls::EventData::Batch.example
 
     json_text = batch.serialize

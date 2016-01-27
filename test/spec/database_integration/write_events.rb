@@ -1,6 +1,6 @@
 require_relative './database_integration_init'
 
-describe "Write Event" do
+context "Write Event" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
@@ -17,20 +17,20 @@ describe "Write Event" do
 
   __logger.data read_data.inspect
 
-  describe "Event is written" do
-    specify "Stream Name" do
+  context "Event is written" do
+    test "Stream Name" do
       assert(read_data.stream_name == stream_name)
     end
 
-    specify "Stream Name" do
+    test "Stream Name" do
       assert(read_data.number == 0)
     end
 
-    specify "Data" do
+    test "Data" do
       assert(read_data.data == {'some_attribute' => 'some value'})
     end
 
-    specify "Metadata" do
+    test "Metadata" do
       assert(read_data.metadata == {'some_meta_attribute' => 'some meta value'})
     end
   end

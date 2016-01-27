@@ -1,6 +1,6 @@
 require_relative './database_integration_init'
 
-describe "Write Batch of Events" do
+context "Write Batch of Events" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'
   path = "/streams/#{stream_name}"
 
@@ -28,7 +28,7 @@ describe "Write Batch of Events" do
     i += 1
     event_data = eval("read_data_#{i}")
 
-    specify "Individual events are written" do
+    test "Individual events are written" do
       assert(event_data.data['some_attribute'] == eval("id_#{i}"))
     end
   end

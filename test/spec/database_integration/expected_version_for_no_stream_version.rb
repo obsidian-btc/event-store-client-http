@@ -1,6 +1,6 @@
 require_relative './database_integration_init'
 
-describe "The :no_stream Expected Version Number" do
+context "The :no_stream Expected Version Number" do
   context "Events have not yet been written to the stream" do
     stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testNoStreamVersionNoEvents'
 
@@ -8,7 +8,7 @@ describe "The :no_stream Expected Version Number" do
 
     event_data = EventStore::Client::HTTP::Controls::EventData::Write.example
 
-    specify "Succeeds" do
+    test "Succeeds" do
       writer.write event_data, stream_name, expected_version: -1
     end
   end
@@ -23,7 +23,7 @@ describe "The :no_stream Expected Version Number" do
 
     event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example i: 2, type: 'SecondEvent'
 
-    specify "Is an error" do
+    test "Is an error" do
       begin
         writer.write event_data_2, stream_name, expected_version: -1
       rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error

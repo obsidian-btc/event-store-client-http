@@ -1,6 +1,6 @@
 require_relative '../database_integration_init'
 
-describe "Read Slices from a Stream that Doesn't Exist" do
+context "Read Slices from a Stream that Doesn't Exist" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testNotFound"
 
   reader = EventStore::Client::HTTP::StreamReader::Terminal.build stream_name
@@ -10,7 +10,7 @@ describe "Read Slices from a Stream that Doesn't Exist" do
     enumerated = true
   end
 
-  specify "Slices are not enumerated" do
-    refute(enumerated)
+  test "Slices are not enumerated" do
+    assert !enumerated
   end
 end
