@@ -1,3 +1,4 @@
+# Closed for further elaboration [Nathan, Scott, Wed Jan 27, 2016]
 module EventStore
   module Client
     module HTTP
@@ -5,9 +6,8 @@ module EventStore
         setting :host
         setting :port
 
-        attr_writer :connection
-
         dependency :logger, Telemetry::Logger
+        dependency :connection, Connection::Client
 
         def self.build(settings=nil, namespace=nil)
           logger.trace "Building HTTP session"
@@ -19,6 +19,9 @@ module EventStore
             namespace = Array(namespace)
 
             settings.set(instance, *namespace)
+
+            Connection::Client.configure instance, instance.host, instance.port, :reconnect => :when_closed
+
             logger.debug "Built HTTP session"
           end
         end
@@ -41,10 +44,6 @@ module EventStore
               :path => path
             )
           end
-        end
-
-        def connection
-          @connection ||= Connection.client host, port
         end
 
         def self.logger
