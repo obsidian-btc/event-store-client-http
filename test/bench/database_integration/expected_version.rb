@@ -1,4 +1,4 @@
-require_relative './database_integration_init'
+require_relative '../bench_init'
 
 context "Writing the Expected Version Number" do
   context "Right Version" do
