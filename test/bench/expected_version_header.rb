@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Expected Version" do
   expected_version_header = EventStore::Client::HTTP::Controls::ExpectedVersionHeader::FieldName.example

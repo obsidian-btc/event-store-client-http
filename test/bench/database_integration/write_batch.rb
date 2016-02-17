@@ -1,4 +1,4 @@
-require_relative './database_integration_init'
+require_relative '../bench_init'
 
 context "Write Batch of Events" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get 'testEventWriter'

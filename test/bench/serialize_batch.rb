@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Event Data Serialization" do
   test "Converts to JSON text" do

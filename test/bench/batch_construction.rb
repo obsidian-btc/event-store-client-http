@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Construct a Batch from a Single EventData" do
   test "The single EventData is added to the batch" do

@@ -1,4 +1,4 @@
-require_relative './database_integration_init'
+require_relative '../bench_init'
 
 context "Read Slices" do
   stream_name = EventStore::Client::HTTP::Controls::Writer.write 2, 'testStreamReader'

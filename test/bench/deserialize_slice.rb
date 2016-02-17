@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Stream Slice" do
   json_text = EventStore::Client::HTTP::Controls::Slice::JSON.text

@@ -1,4 +1,4 @@
-require_relative './database_integration_init'
+require_relative '../bench_init'
 
 context "The :no_stream Expected Version Number" do
   context "Events have not yet been written to the stream" do
