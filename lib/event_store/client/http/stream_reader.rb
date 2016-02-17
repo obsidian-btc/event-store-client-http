@@ -12,13 +12,14 @@
           @start_path = start_path
         end
 
-        def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
-          starting_position ||= 0
-          slice_size ||= 20
+        def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
+          starting_position ||= Defaults.starting_position
+          slice_size ||= Defaults.starting_position
+          direction ||= Defaults.direction
 
           logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
 
-          start_path = slice_path(stream_name, starting_position, slice_size)
+          start_path = slice_path(stream_name, starting_position, slice_size, direction)
           logger.debug "Starting URI: #{start_path}"
 
           new(start_path).tap do |instance|
@@ -29,14 +30,15 @@
           end
         end
 
-        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, session: nil)
-          instance = build stream_name, starting_position: starting_position, slice_size: slice_size, session: session
+        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
+          instance = build stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
           receiver.stream_reader = instance
           instance
         end
 
         virtual :each
 
+        ## TODO remove, defined later in class
         def advance_uri(next_uri)
           self.next_uri = (next_uri || self.next_uri)
         end
@@ -90,12 +92,26 @@
           body.nil? || body.empty?
         end
 
-        def self.slice_path(stream_name, starting_position, slice_size)
-          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}"
+        def self.slice_path(stream_name, starting_position, slice_size, direction)
+          "/streams/#{stream_name}/#{starting_position}/#{direction}/#{slice_size}"
         end
 
         def self.logger
           Telemetry::Logger.get self
+        end
+
+        module Defaults
+          def self.starting_position
+            0
+          end
+
+          def self.slice_size
+            20
+          end
+
+          def self.direction
+            :forward
+          end
         end
       end
     end

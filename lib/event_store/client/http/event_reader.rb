@@ -8,16 +8,17 @@ module EventStore
         dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
-        def starting_position
-          @starting_position ||= 0
-        end
+        ## TODO [backward] remove, probably not needed on this object. it's passed on
+        # def starting_position
+        #   @starting_position ||= Defaults.starting_position
+        # end
 
-        def slice_size
-          @slice_size ||= 20
-        end
+        # def slice_size
+        #   @slice_size ||= Defaults.slice_size
+        # end
 
         def direction
-          @direction ||= :forward
+          @direction ||= Defaults.direction
         end
 
         def initialize(stream_name, starting_position=nil, slice_size=nil, direction=nil)
@@ -27,12 +28,14 @@ module EventStore
           @direction = direction
         end
 
-        def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
+        def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
           logger.trace "Building event reader"
 
-          new(stream_name, starting_position, slice_size).tap do |instance|
+          new(stream_name, starting_position, slice_size, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
-            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
+
+            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
+            
             Telemetry::Logger.configure instance
             logger.debug "Built event reader"
           end
@@ -60,7 +63,7 @@ module EventStore
         end
 
         def read_slice(slice, &action)
-          slice.each do |event_json_data|
+          slice.each(direction) do |event_json_data|
             entry = get_entry(event_json_data)
             action.call entry
           end
