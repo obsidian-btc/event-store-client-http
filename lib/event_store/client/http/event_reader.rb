@@ -16,10 +16,15 @@ module EventStore
           @slice_size ||= 20
         end
 
-        def initialize(stream_name, starting_position=nil, slice_size=nil)
+        def direction
+          @direction ||= :forward
+        end
+
+        def initialize(stream_name, starting_position=nil, slice_size=nil, direction=nil)
           @stream_name = stream_name
           @starting_position = starting_position
           @slice_size = slice_size
+          @direction = direction
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)

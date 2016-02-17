@@ -42,7 +42,8 @@ module EventStore
           end
         end
 
-        def each(&action)
+        def each(backward=nil, &action)
+          ## TODO [backward] use .each when direction is reverse [Scott, Wed Feb 17 2016]
           entries.reverse_each do |event_json_data|
             action.call event_json_data
           end
