@@ -13,9 +13,9 @@
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
-          starting_position ||= Defaults.starting_position
           slice_size ||= Defaults.starting_position
-          direction ||= Defaults.direction
+          direction ||= Defaults.direction(starting_position)
+          starting_position ||= Defaults.starting_position(direction)
 
           logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
 
@@ -101,8 +101,14 @@
         end
 
         module Defaults
-          def self.starting_position
-            0
+          def self.starting_position(direction=nil)
+            direction ||= self.direction
+
+            if direction == :forward
+              return 0
+            else
+              return 'head'
+            end
           end
 
           def self.slice_size
