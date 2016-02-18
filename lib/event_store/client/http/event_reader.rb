@@ -21,25 +21,21 @@ module EventStore
           @direction ||= HTTP::StreamReader::Defaults.direction
         end
 
-        # def initialize(stream_name, starting_position=nil, slice_size=nil, direction=nil)
-        def initialize(direction=nil)
-          # @stream_name = stream_name
-          # @starting_position = starting_position
-          # @slice_size = slice_size
+        def initialize(stream_name, direction)
+          @stream_name = stream_name
           @direction = direction
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
-          logger.trace "Building event reader"
+          logger.trace "Building event reader (Stream Name: #{stream_name})"
 
-          # new(stream_name, starting_position, slice_size, direction).tap do |instance|
-          new(direction).tap do |instance|
+          new(stream_name, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built event reader"
+            logger.debug "Built event reader (Stream Name: #{stream_name})"
           end
         end
 

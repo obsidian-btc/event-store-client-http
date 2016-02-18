@@ -1,3 +1,5 @@
+ENV['LOG_LEVEL'] ||= 'debug'
+
 require_relative '../subscription_init'
 
 stream_name = nil
@@ -10,5 +12,5 @@ end
 event_reader = EventStore::Client::HTTP::Subscription.build stream_name, slice_size: 1
 
 event_reader.each do |event|
-  logger(__FILE__).info event.inspect
+  __logger.info event.inspect
 end

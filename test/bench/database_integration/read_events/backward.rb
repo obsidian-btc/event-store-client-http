@@ -12,7 +12,7 @@ context "Read Events Backward" do
   end
 
   events.each do |event|
-    __logger.focus event.inspect
+    __logger.data event.inspect
   end
 
   test "Events are read" do
@@ -23,8 +23,8 @@ context "Read Events Backward" do
     first = events[0].created_time
     last = events[1].created_time
 
-    __logger.focus "First Created Time: #{first}"
-    __logger.focus " Last Created Time: #{last}"
+    __logger.data "First Created Time: #{first}"
+    __logger.data " Last Created Time: #{last}"
 
     assert(last < first)
   end

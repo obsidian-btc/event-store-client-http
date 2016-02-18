@@ -3,13 +3,17 @@
     module HTTP
       class StreamReader
         attr_reader :start_path
+        attr_reader :direction
+
+        ## TODO needed?
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(start_path)
+        def initialize(start_path, direction)
           @start_path = start_path
+          @direction = direction
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
@@ -22,7 +26,7 @@
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
           logger.debug "Starting URI: #{start_path}"
 
-          new(start_path).tap do |instance|
+          new(start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
@@ -53,7 +57,9 @@
 
               raise StopIteration if slice.nil?
 
-              next_uri = slice.links.next_uri
+              # next_uri = slice.links.next_uri
+              next_uri = slice.next_uri(direction)
+
               y << [slice, next_uri]
             end
 
