@@ -18,16 +18,20 @@ module EventStore
         # end
 
         def direction
-          @direction ||= HTTP::StreamReader::Defaults.direction
+          @direction ||= StreamReader::Defaults.direction
         end
 
-        def initialize(stream_name, direction)
+        def initialize(stream_name, direction=nil)
           @stream_name = stream_name
           @direction = direction
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
-          logger.trace "Building event reader (Stream Name: #{stream_name})"
+          slice_size ||= StreamReader::Defaults.slice_size
+          direction ||= StreamReader::Defaults.direction
+          starting_position ||= StreamReader::Defaults.starting_position(direction)
+
+          logger.trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           new(stream_name, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
@@ -35,7 +39,7 @@ module EventStore
             stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built event reader (Stream Name: #{stream_name})"
+            logger.debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 

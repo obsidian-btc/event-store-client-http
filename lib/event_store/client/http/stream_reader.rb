@@ -17,11 +17,11 @@
         end
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
-          slice_size ||= Defaults.starting_position
+          slice_size ||= Defaults.slice_size
           direction ||= Defaults.direction
           starting_position ||= Defaults.starting_position(direction)
 
-          logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+          logger.trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
           logger.debug "Starting URI: #{start_path}"
@@ -30,7 +30,7 @@
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
+            logger.debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
