@@ -6,12 +6,12 @@
         dependency :logger, Telemetry::Logger
 
         def self.build(session: nil)
-          logger.trace "Building event writer"
+          logger.opt_trace "Building event writer"
 
           new.tap do |instance|
             EventStore::Client::HTTP::Request::Post.configure instance, session: session
             Telemetry::Logger.configure instance
-            logger.debug "Built event writer"
+            logger.opt_debug "Built event writer"
           end
         end
 
@@ -46,9 +46,9 @@
         end
 
         def batch(event_data)
-          logger.trace "Constructing batch"
+          logger.opt_trace "Constructing batch"
           EventStore::Client::HTTP::EventData::Batch.build(event_data).tap do
-            logger.debug "Constructed batch"
+            logger.opt_debug "Constructed batch"
           end
         end
 

@@ -8,15 +8,15 @@ module EventStore
           attr_accessor :long_poll
 
           def call(uri)
-            logger.trace "Issuing GET (URI: #{uri})"
+            logger.opt_trace "Issuing GET (URI: #{uri})"
 
             uri = session.build_uri(uri)
             response = ::HTTP::Commands::Get.(uri, headers, connection: session.connection)
 
             body = response.body
 
-            logger.debug "Received GET (URI: #{uri})"
-            logger.data "Response body (Length: #{body.to_s.length}):\n#{body}"
+            logger.opt_debug "Received GET (URI: #{uri})"
+            logger.opt_data "Response body (Length: #{body.to_s.length}):\n#{body}"
 
             return body, response
           end

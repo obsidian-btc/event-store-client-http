@@ -21,16 +21,16 @@
           direction ||= Defaults.direction
           starting_position ||= Defaults.starting_position(direction)
 
-          logger.trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+          logger.opt_trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
-          logger.debug "Starting URI: #{start_path}"
+          logger.opt_debug "Starting URI: #{start_path}"
 
           new(start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+            logger.opt_debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
@@ -71,17 +71,17 @@
 
         def advance_uri(uri)
           self.next_uri = uri
-          logger.debug "Next URI: #{next_uri}"
+          logger.opt_debug "Next URI: #{next_uri}"
         end
 
         def get_slice(uri)
-          logger.trace "Getting (URI: #{uri})"
+          logger.opt_trace "Getting (URI: #{uri})"
           body, _ = request.(uri)
 
-          logger.data "(#{body.class}) #{body}"
+          logger.opt_data "(#{body.class}) #{body}"
 
           parse(body).tap do
-            logger.trace "Got (URI: #{uri})"
+            logger.opt_trace "Got (URI: #{uri})"
           end
         end
         alias :next_slice :get_slice

@@ -10,7 +10,7 @@ module EventStore
         dependency :connection, Connection::Client
 
         def self.build(settings=nil, namespace=nil)
-          logger.trace "Building HTTP session"
+          logger.opt_trace "Building HTTP session"
 
           new.tap do |instance|
             Telemetry::Logger.configure instance
@@ -22,7 +22,7 @@ module EventStore
 
             Connection::Client.configure instance, instance.host, instance.port, :reconnect => :when_closed
 
-            logger.debug "Built HTTP session"
+            logger.opt_debug "Built HTTP session"
           end
         end
 

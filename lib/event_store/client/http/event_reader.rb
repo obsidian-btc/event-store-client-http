@@ -31,7 +31,7 @@ module EventStore
           direction ||= StreamReader::Defaults.direction
           starting_position ||= StreamReader::Defaults.starting_position(direction)
 
-          logger.trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+          logger.opt_trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           new(stream_name, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
@@ -39,7 +39,7 @@ module EventStore
             stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+            logger.opt_debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
