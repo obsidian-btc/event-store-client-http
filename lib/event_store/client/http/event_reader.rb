@@ -8,28 +8,38 @@ module EventStore
         dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
-        def starting_position
-          @starting_position ||= 0
+        ## TODO [backward] remove, probably not needed on this object. it's passed on
+        # def starting_position
+        #   @starting_position ||= Defaults.starting_position
+        # end
+
+        # def slice_size
+        #   @slice_size ||= Defaults.slice_size
+        # end
+
+        def direction
+          @direction ||= StreamReader::Defaults.direction
         end
 
-        def slice_size
-          @slice_size ||= 20
-        end
-
-        def initialize(stream_name, starting_position=nil, slice_size=nil)
+        def initialize(stream_name, direction=nil)
           @stream_name = stream_name
-          @starting_position = starting_position
-          @slice_size = slice_size
+          @direction = direction
         end
 
-        def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
-          logger.trace "Building event reader"
+        def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
+          slice_size ||= StreamReader::Defaults.slice_size
+          direction ||= StreamReader::Defaults.direction
+          starting_position ||= StreamReader::Defaults.starting_position(direction)
 
-          new(stream_name, starting_position, slice_size).tap do |instance|
+          logger.trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+
+          new(stream_name, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
-            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
+
+            stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
+
             Telemetry::Logger.configure instance
-            logger.debug "Built event reader"
+            logger.debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
@@ -55,7 +65,7 @@ module EventStore
         end
 
         def read_slice(slice, &action)
-          slice.each do |event_json_data|
+          slice.each(direction) do |event_json_data|
             entry = get_entry(event_json_data)
             action.call entry
           end

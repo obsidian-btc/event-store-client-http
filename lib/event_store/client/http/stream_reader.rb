@@ -3,40 +3,46 @@
     module HTTP
       class StreamReader
         attr_reader :start_path
+        attr_reader :direction
+
+        ## TODO needed?
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(start_path)
+        def initialize(start_path, direction)
           @start_path = start_path
+          @direction = direction
         end
 
-        def self.build(stream_name, starting_position: nil, slice_size: nil, session: nil)
-          starting_position ||= 0
-          slice_size ||= 20
+        def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
+          slice_size ||= Defaults.slice_size
+          direction ||= Defaults.direction
+          starting_position ||= Defaults.starting_position(direction)
 
-          logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
+          logger.trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
-          start_path = slice_path(stream_name, starting_position, slice_size)
+          start_path = slice_path(stream_name, starting_position, slice_size, direction)
           logger.debug "Starting URI: #{start_path}"
 
-          new(start_path).tap do |instance|
+          new(start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built slice reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size})"
+            logger.debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
-        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, session: nil)
-          instance = build stream_name, starting_position: starting_position, slice_size: slice_size, session: session
+        def self.configure(receiver, stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
+          instance = build stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
           receiver.stream_reader = instance
           instance
         end
 
         virtual :each
 
+        ## TODO remove, defined later in class
         def advance_uri(next_uri)
           self.next_uri = (next_uri || self.next_uri)
         end
@@ -51,7 +57,9 @@
 
               raise StopIteration if slice.nil?
 
-              next_uri = slice.links.next_uri
+              # next_uri = slice.links.next_uri
+              next_uri = slice.next_uri(direction)
+
               y << [slice, next_uri]
             end
 
@@ -90,12 +98,32 @@
           body.nil? || body.empty?
         end
 
-        def self.slice_path(stream_name, starting_position, slice_size)
-          "/streams/#{stream_name}/#{starting_position}/forward/#{slice_size}"
+        def self.slice_path(stream_name, starting_position, slice_size, direction)
+          "/streams/#{stream_name}/#{starting_position}/#{direction}/#{slice_size}"
         end
 
         def self.logger
           Telemetry::Logger.get self
+        end
+
+        module Defaults
+          def self.starting_position(direction=nil)
+            direction ||= self.direction
+
+            if direction == :forward
+              return 0
+            else
+              return 'head'
+            end
+          end
+
+          def self.slice_size
+            20
+          end
+
+          def self.direction
+            :forward
+          end
         end
       end
     end

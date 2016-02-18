@@ -3,10 +3,14 @@ module EventStore
     module HTTP
       module Controls
         module Writer
-          def self.write(iterations=nil, stream_name=nil)
+          def self.write(iterations=nil, stream_name=nil, verbatim_stream_name: nil)
             iterations ||= 1
+            verbatim_stream_name ||= false
 
-            stream_name = Controls::StreamName.get stream_name
+            unless verbatim_stream_name
+              stream_name = Controls::StreamName.get stream_name
+            end
+
             path = "/streams/#{stream_name}"
 
             post = EventStore::Client::HTTP::Request::Post.build

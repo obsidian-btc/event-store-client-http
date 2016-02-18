@@ -1,4 +1,6 @@
-require_relative '../subscription_init'
+ENV['LOG_LEVEL'] ||= 'debug'
+
+require_relative '../../scripts_init'
 
 stream_name = nil
 begin
@@ -21,7 +23,7 @@ loop do
   event_data = EventStore::Client::HTTP::Controls::EventData::Write.example id
   result = writer.write event_data, stream_name
 
-  logger(__FILE__).data result.inspect
+  __logger.data result.inspect
 
   sleep period_seconds
 end
