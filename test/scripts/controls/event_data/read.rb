@@ -1,4 +1,4 @@
-require_relative './event_data_init'
+require_relative '../../scripts_init'
 
 subject = EventStore::Client::HTTP::Controls::EventData::Read::JSON
 

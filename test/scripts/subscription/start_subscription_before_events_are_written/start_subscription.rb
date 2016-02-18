@@ -1,6 +1,6 @@
 ENV['LOG_LEVEL'] ||= 'debug'
 
-require_relative '../subscription_init'
+require_relative '../../scripts_init'
 
 stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testSubscriptionFirst"
 __logger.info "Stream name: #{stream_name}"

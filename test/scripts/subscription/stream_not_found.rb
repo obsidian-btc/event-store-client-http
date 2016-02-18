@@ -1,4 +1,4 @@
-require_relative './subscription_init'
+require_relative '../scripts_init'
 
 stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testNotFound"
 
