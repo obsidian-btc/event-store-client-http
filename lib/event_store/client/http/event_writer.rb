@@ -22,18 +22,18 @@
         end
 
         def write(event_data, stream_name, expected_version: nil)
-          logger.trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
-          logger.data "(#{event_data.class}) #{event_data.inspect}"
+          logger.opt_trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.opt_data "(#{event_data.class}) #{event_data.inspect}"
 
           batch = batch(event_data)
 
           write_batch(batch, stream_name, expected_version: expected_version).tap do
-            logger.debug "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+            logger.opt_debug "Wrote event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           end
         end
 
         def write_batch(batch, stream_name, expected_version: nil)
-          logger.trace "Writing batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
 
           json_text = batch.serialize
           logger.data "(#{json_text.class}) #{json_text}"
@@ -41,7 +41,7 @@
           path = path(stream_name)
 
           request.(json_text, path, expected_version: expected_version).tap do |instance|
-            logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+            logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           end
         end
 

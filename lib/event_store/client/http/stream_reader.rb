@@ -2,16 +2,17 @@
   module Client
     module HTTP
       class StreamReader
+        attr_reader :stream_name
         attr_reader :start_path
         attr_reader :direction
 
-        ## TODO needed?
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(start_path, direction)
+        def initialize(stream_name, start_path, direction)
+          @stream_name = stream_name
           @start_path = start_path
           @direction = direction
         end
@@ -24,9 +25,9 @@
           logger.opt_trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
-          logger.opt_debug "Starting URI: #{start_path}"
+          logger.debug "Starting URI: #{start_path}"
 
-          new(start_path, direction).tap do |instance|
+          new(stream_name, start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
@@ -42,28 +43,22 @@
 
         virtual :each
 
-        ## TODO remove, defined later in class
-        def advance_uri(next_uri)
-          self.next_uri = (next_uri || self.next_uri)
-        end
-
         def to_enum
           Enumerator.new do |y|
             self.next_uri = start_path
-            logger.trace "Enumerating"
+            logger.trace "Enumerating slices (Stream Name: #{stream_name})"
 
             loop do
               slice = next_slice(next_uri)
 
               raise StopIteration if slice.nil?
 
-              # next_uri = slice.links.next_uri
               next_uri = slice.next_uri(direction)
 
               y << [slice, next_uri]
             end
 
-            logger.debug "Enumerated"
+            logger.debug "Completed enumerating slices (Stream Name: #{stream_name})"
           end
         end
         alias :enum_for :to_enum

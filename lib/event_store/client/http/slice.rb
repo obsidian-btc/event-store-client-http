@@ -10,6 +10,10 @@ module EventStore
           data['entries']
         end
 
+        def length
+          entries.length
+        end
+
         def links
           @links ||= Links.build data['links']
         end
