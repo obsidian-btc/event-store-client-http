@@ -14,7 +14,7 @@
 
         def self.build(stream_name, starting_position: nil, slice_size: nil, direction: nil, session: nil)
           slice_size ||= Defaults.starting_position
-          direction ||= Defaults.direction(starting_position)
+          direction ||= Defaults.direction
           starting_position ||= Defaults.starting_position(direction)
 
           logger.trace "Building slice reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size})"
