@@ -10,6 +10,10 @@ module EventStore
           data['entries']
         end
 
+        def length
+          entries.length
+        end
+
         def links
           @links ||= Links.build data['links']
         end
@@ -19,26 +23,26 @@ module EventStore
         end
 
         def self.build(data)
-          logger.trace 'Building slice'
+          logger.opt_trace 'Building slice'
 
           new(data).tap do |instance|
             Telemetry::Logger.configure instance
-            logger.debug 'Built slice'
+            logger.opt_debug 'Built slice'
           end
         end
 
         def self.parse(json_text)
           data = parse_json(json_text)
-          logger.data "(#{data.class}) #{data}"
+          logger.opt_data "(#{data.class}) #{data}"
 
           build(data)
         end
 
         def self.parse_json(json_text)
-          logger.trace "Parsing JSON"
+          logger.opt_trace "Parsing JSON"
 
           JSON.parse(json_text).tap do
-            logger.debug "Parsed JSON"
+            logger.opt_debug "Parsed JSON"
           end
         end
 
@@ -71,7 +75,7 @@ module EventStore
         end
 
         def self.build(links)
-          logger.trace 'Building page links'
+          logger.opt_trace 'Building page links'
 
           links ||= []
 
@@ -79,8 +83,8 @@ module EventStore
           previous_uri = get_previous_uri(links)
 
           new(next_uri, previous_uri).tap do |instance|
-            logger.debug 'Built page links'
-            logger.data links
+            logger.opt_debug 'Built page links'
+            logger.opt_data links
           end
         end
 

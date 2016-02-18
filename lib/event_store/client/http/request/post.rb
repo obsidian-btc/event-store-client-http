@@ -8,8 +8,8 @@ module EventStore
           include Request
 
           def call(data, uri, expected_version: nil)
-            logger.trace "Issuing POST (Path: #{uri}, Expected Version: #{expected_version.inspect})"
-            logger.data data
+            logger.opt_trace "Issuing POST (Path: #{uri}, Expected Version: #{expected_version.inspect})"
+            logger.opt_data data
 
             uri = session.build_uri(uri)
 
@@ -20,7 +20,7 @@ module EventStore
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (URI: #{uri})"
             end
 
-            logger.debug "Issued POST (Path: #{uri}, Status Line: #{response.status_line.inspect})"
+            logger.opt_debug "Issued POST (Path: #{uri}, Status Line: #{response.status_line.inspect})"
 
             response
           end

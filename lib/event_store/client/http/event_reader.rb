@@ -8,15 +8,6 @@ module EventStore
         dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
-        ## TODO [backward] remove, probably not needed on this object. it's passed on
-        # def starting_position
-        #   @starting_position ||= Defaults.starting_position
-        # end
-
-        # def slice_size
-        #   @slice_size ||= Defaults.slice_size
-        # end
-
         def direction
           @direction ||= StreamReader::Defaults.direction
         end
@@ -31,7 +22,7 @@ module EventStore
           direction ||= StreamReader::Defaults.direction
           starting_position ||= StreamReader::Defaults.starting_position(direction)
 
-          logger.trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+          logger.opt_trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           new(stream_name, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
@@ -39,7 +30,7 @@ module EventStore
             stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+            logger.opt_debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
@@ -65,10 +56,12 @@ module EventStore
         end
 
         def read_slice(slice, &action)
+          logger.trace "Reading slice (Number of Entries: #{slice.length})"
           slice.each(direction) do |event_json_data|
             entry = get_entry(event_json_data)
             action.call entry
           end
+          logger.debug "Read slice (Number of Entries: #{slice.length})"
         end
 
         def get_entry(event_json_data)
@@ -78,7 +71,11 @@ module EventStore
 
         def get_json_text(event_json_data)
           uri = entry_link(event_json_data)
+
+          logger.trace "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
           body_text, _ = request.(uri)
+          logger.debug "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+
           body_text
         end
 

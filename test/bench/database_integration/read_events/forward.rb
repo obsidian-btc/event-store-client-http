@@ -1,6 +1,6 @@
 require_relative '../../bench_init'
 
-context "Read Events Backward" do
+context "Read Events Forward" do
   control_writer = EventStore::Client::HTTP::Controls::Writer
   stream_name = control_writer.write 2, 'testEventReaderBackward'
 

@@ -2,16 +2,17 @@
   module Client
     module HTTP
       class StreamReader
+        attr_reader :stream_name
         attr_reader :start_path
         attr_reader :direction
 
-        ## TODO needed?
         attr_accessor :next_uri
 
         dependency :request, EventStore::Client::HTTP::Request::Get
         dependency :logger, Telemetry::Logger
 
-        def initialize(start_path, direction)
+        def initialize(stream_name, start_path, direction)
+          @stream_name = stream_name
           @start_path = start_path
           @direction = direction
         end
@@ -21,16 +22,16 @@
           direction ||= Defaults.direction
           starting_position ||= Defaults.starting_position(direction)
 
-          logger.trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+          logger.opt_trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
           logger.debug "Starting URI: #{start_path}"
 
-          new(start_path, direction).tap do |instance|
+          new(stream_name, start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
 
             Telemetry::Logger.configure instance
-            logger.debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
+            logger.opt_debug "Built stream reader (Stream Name: #{stream_name}, Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
           end
         end
 
@@ -42,28 +43,22 @@
 
         virtual :each
 
-        ## TODO remove, defined later in class
-        def advance_uri(next_uri)
-          self.next_uri = (next_uri || self.next_uri)
-        end
-
         def to_enum
           Enumerator.new do |y|
             self.next_uri = start_path
-            logger.trace "Enumerating"
+            logger.trace "Enumerating slices (Stream Name: #{stream_name})"
 
             loop do
               slice = next_slice(next_uri)
 
               raise StopIteration if slice.nil?
 
-              # next_uri = slice.links.next_uri
               next_uri = slice.next_uri(direction)
 
               y << [slice, next_uri]
             end
 
-            logger.debug "Enumerated"
+            logger.debug "Completed enumerating slices (Stream Name: #{stream_name})"
           end
         end
         alias :enum_for :to_enum
@@ -71,17 +66,17 @@
 
         def advance_uri(uri)
           self.next_uri = uri
-          logger.debug "Next URI: #{next_uri}"
+          logger.opt_debug "Next URI: #{next_uri}"
         end
 
         def get_slice(uri)
-          logger.trace "Getting (URI: #{uri})"
+          logger.opt_trace "Getting (URI: #{uri})"
           body, _ = request.(uri)
 
-          logger.data "(#{body.class}) #{body}"
+          logger.opt_data "(#{body.class}) #{body}"
 
           parse(body).tap do
-            logger.trace "Got (URI: #{uri})"
+            logger.opt_trace "Got (URI: #{uri})"
           end
         end
         alias :next_slice :get_slice

@@ -14,19 +14,19 @@ module EventStore
           end
 
           def self.parse_json(json_text)
-            logger.trace "Parsing JSON"
-            logger.data "(#{json_text.class}) #{json_text}"
+            logger.opt_trace "Parsing JSON"
+            logger.opt_data "(#{json_text.class}) #{json_text}"
 
             data = JSON.parse(json_text)
 
-            logger.debug "Parsed JSON"
+            logger.opt_debug "Parsed JSON"
 
             deserialize(data)
           end
 
           def self.deserialize(event_data)
-            logger.trace "Deserializing event data"
-            logger.data "(#{event_data.class}) #{event_data}"
+            logger.opt_trace "Deserializing event data"
+            logger.opt_data "(#{event_data.class}) #{event_data}"
 
             data = {}
 
@@ -48,8 +48,8 @@ module EventStore
 
             data['links'] = Links.build(links)
 
-            logger.debug "Deserialized entry data (Type: #{data['type']}, ID: #{data['id']}, Stream Name: #{data['stream_name']})"
-            logger.data "(#{data.class}) #{data}"
+            logger.opt_debug "Deserialized entry data (Type: #{data['type']}, ID: #{data['id']}, Stream Name: #{data['stream_name']})"
+            logger.opt_data "(#{data.class}) #{data}"
 
             data
           end
@@ -66,15 +66,15 @@ module EventStore
             end
 
             def self.build(links_data)
-              logger.trace 'Building event links data'
-              logger.data "(#{links_data.class}) #{links_data}"
+              logger.opt_trace 'Building event links data'
+              logger.opt_data "(#{links_data.class}) #{links_data}"
 
               links_data ||= []
 
               edit_uri = get_edit_uri(links_data)
 
               new(edit_uri).tap do |instance|
-                logger.debug 'Built event links data'
+                logger.opt_debug 'Built event links data'
               end
             end
 

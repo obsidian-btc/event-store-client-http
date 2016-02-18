@@ -22,7 +22,7 @@ module EventStore
 
             Connection::Client.configure instance, instance.host, instance.port, :reconnect => :when_closed
 
-            logger.debug "Built HTTP session"
+            logger.debug "Built HTTP session (Host: #{instance.host}, Port: #{instance.port})"
           end
         end
 
