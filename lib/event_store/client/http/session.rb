@@ -20,7 +20,7 @@ module EventStore
 
             settings.set(instance, *namespace)
 
-            Connection::Client.configure instance, instance.host, instance.port, :reconnect => :when_closed
+            Connection::Client.configure instance, instance.host, instance.port, :reconnect => :closed
 
             logger.debug "Built HTTP session (Host: #{instance.host}, Port: #{instance.port})"
           end
