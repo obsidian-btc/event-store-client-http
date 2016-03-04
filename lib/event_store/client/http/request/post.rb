@@ -14,7 +14,7 @@ module EventStore
             uri = session.build_uri(uri)
 
             headers = self.headers(expected_version)
-            response = ::HTTP::Commands::Post.(data, uri, headers)
+            response = ::HTTP::Commands::Post.(data, uri, headers, :connection => session.connection)
 
             if "#{response.status_code} #{response.reason_phrase}" == '400 Wrong expected EventNumber'
               raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (URI: #{uri})"
