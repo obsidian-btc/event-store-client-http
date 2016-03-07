@@ -22,6 +22,8 @@ module EventStore
           direction ||= StreamReader::Defaults.direction
           starting_position ||= StreamReader::Defaults.starting_position(direction)
 
+          session ||= EventStore::Client::HTTP::Session.build
+
           logger.opt_trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           new(stream_name, direction).tap do |instance|
