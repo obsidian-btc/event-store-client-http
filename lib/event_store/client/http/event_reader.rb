@@ -68,8 +68,7 @@ module EventStore
         end
 
         def change_connection_scheduler(scheduler)
-          request.session.connection.scheduler = scheduler
-          stream_reader.request.session.connection.scheduler = scheduler
+          session.connection.scheduler = scheduler
         end
 
         def get_entry(event_json_data)
