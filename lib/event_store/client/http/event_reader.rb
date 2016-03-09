@@ -5,6 +5,7 @@ module EventStore
         attr_reader :stream_name
 
         dependency :request, EventStore::Client::HTTP::Request::Get
+        dependency :session, Session
         dependency :stream_reader, StreamReader
         dependency :logger, Telemetry::Logger
 
@@ -27,9 +28,9 @@ module EventStore
           logger.opt_trace "Building event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           new(stream_name, direction).tap do |instance|
-            EventStore::Client::HTTP::Request::Get.configure instance, session: session
-
+            Request::Get.configure instance, session: session
             stream_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, direction: direction, session: session
+            instance.session = session
 
             Telemetry::Logger.configure instance
             logger.opt_debug "Built event reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
@@ -64,6 +65,11 @@ module EventStore
             action.call entry
           end
           logger.debug "Read slice (Number of Entries: #{slice.length})"
+        end
+
+        def change_connection_scheduler(scheduler)
+          request.session.connection.scheduler = scheduler
+          stream_reader.request.session.connection.scheduler = scheduler
         end
 
         def get_entry(event_json_data)

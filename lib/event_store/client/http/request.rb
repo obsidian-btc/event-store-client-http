@@ -43,6 +43,12 @@ module EventStore
             self.session = session
           end
         end
+
+        module Assertions
+          def connection_scheduler?(scheduler)
+            session.connection.scheduler == scheduler
+          end
+        end
       end
     end
   end
