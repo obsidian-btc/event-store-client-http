@@ -2,6 +2,8 @@
   module Client
     module HTTP
       class StreamReader
+        extend Virtual::Macro
+
         attr_reader :stream_name
         attr_reader :start_path
         attr_reader :direction
