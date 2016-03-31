@@ -6,15 +6,18 @@ module EventStore
           cls.extend Logger
           cls.extend Build
           cls.extend Configure
+          cls.extend Virtual::Macro
 
-          cls.send :dependency, :logger, Telemetry::Logger
-          cls.send :dependency, :session, EventStore::Client::HTTP::Session
+          cls.public_send :dependency, :logger, Telemetry::Logger
+          cls.public_send :dependency, :session, EventStore::Client::HTTP::Session
+          cls.public_send :virtual, :configure_dependencies
         end
 
         module Build
           def build(session: nil)
             new.tap do |instance|
               Telemetry::Logger.configure instance
+              instance.configure_dependencies
               instance.configure_session(session)
             end
           end

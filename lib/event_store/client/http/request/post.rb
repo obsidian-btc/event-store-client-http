@@ -4,8 +4,15 @@ module EventStore
       module Request
         class Post
           class ExpectedVersionError < RuntimeError; end
+          class Error < RuntimeError; end
 
           include Request
+
+          dependency :post, ::HTTP::Commands::Post
+
+          def configure_dependencies
+            ::HTTP::Commands::Post.configure self, connection: session.connection
+          end
 
           def call(data, uri, expected_version: nil)
             logger.opt_trace "Issuing POST (Path: #{uri}, Expected Version: #{expected_version.inspect})"
@@ -14,10 +21,19 @@ module EventStore
             uri = session.build_uri(uri)
 
             headers = self.headers(expected_version)
-            response = ::HTTP::Commands::Post.(data, uri, headers, :connection => session.connection)
 
-            if "#{response.status_code} #{response.reason_phrase}" == '400 Wrong expected EventNumber'
-              raise ExpectedVersionError, "Wrong expected version number: #{expected_version} (URI: #{uri})"
+            response = post.(data, uri, headers)
+
+            if response.status_code == 400 && response.reason_phrase == 'Wrong expected EventNumber'
+              error_message = "Wrong expected version number: #{expected_version} (URI: #{uri})"
+              logger.error error_message
+              raise ExpectedVersionError, error_message
+            end
+
+            if response.status_code != 201
+              error_message = "Post command failed (Status Code: #{response.status_code}, Reason Phrase: #{response.reason_phrase})"
+              logger.error error_message
+              raise Error, error_message
             end
 
             logger.opt_debug "Issued POST (Path: #{uri}, Status Line: #{response.status_line.inspect})"
