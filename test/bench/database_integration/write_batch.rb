@@ -26,10 +26,12 @@ context "Write Batch of Events" do
 
   2.times do |i|
     i += 1
-    event_data = eval("read_data_#{i}")
+    event_data = binding.local_variable_get "read_data_#{i}"
 
     test "Individual events are written" do
-      assert(event_data.data['some_attribute'] == eval("id_#{i}"))
+      control_value = binding.local_variable_get "id_#{i}"
+
+      assert event_data.data[:some_attribute] == control_value
     end
   end
 end

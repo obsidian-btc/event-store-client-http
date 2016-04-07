@@ -17,7 +17,7 @@ module EventStore
             logger.opt_trace "Parsing JSON"
             logger.opt_data "(#{json_text.class}) #{json_text}"
 
-            data = JSON.parse(json_text)
+            data = JSON.parse(json_text, :symbolize_names => true)
 
             logger.opt_debug "Parsed JSON"
 
@@ -30,25 +30,25 @@ module EventStore
 
             data = {}
 
-            data['created_time'] = event_data['updated']
+            data[:created_time] = event_data[:updated]
 
-            content = event_data['content']
+            content = event_data[:content]
 
-            data['type'] = content['eventType']
-            data['number'] = content['eventNumber']
-            data['stream_name'] = content['eventStreamId']
+            data[:type] = content[:eventType]
+            data[:number] = content[:eventNumber]
+            data[:stream_name] = content[:eventStreamId]
 
-            data['data'] = format(content['data'])
+            data[:data] = format(content[:data])
 
-            unless content['metadata'] == ''
-              data['metadata'] = format(content['metadata'])
+            unless content[:metadata] == ''
+              data[:metadata] = format(content[:metadata])
             end
 
-            links = event_data['links']
+            links = event_data[:links]
 
-            data['links'] = Links.build(links)
+            data[:links] = Links.build(links)
 
-            logger.opt_debug "Deserialized entry data (Type: #{data['type']}, ID: #{data['id']}, Stream Name: #{data['stream_name']})"
+            logger.opt_debug "Deserialized entry data (Type: #{data[:type]}, ID: #{data[:id]}, Stream Name: #{data[:stream_name]})"
             logger.opt_data "(#{data.class}) #{data}"
 
             data
@@ -80,7 +80,7 @@ module EventStore
 
             def self.get_edit_uri(links_data)
               links_data.map do |link|
-                link['uri'] if link['relation'] == 'edit'
+                link[:uri] if link[:relation] == 'edit'
               end.compact.first
             end
 

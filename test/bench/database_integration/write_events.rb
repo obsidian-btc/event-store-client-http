@@ -27,11 +27,11 @@ context "Write Event" do
     end
 
     test "Data" do
-      assert(read_data.data == {'some_attribute' => 'some value'})
+      assert(read_data.data == {:some_attribute => 'some value'})
     end
 
     test "Metadata" do
-      assert(read_data.metadata == {'some_meta_attribute' => 'some meta value'})
+      assert(read_data.metadata == {:some_meta_attribute => 'some meta value'})
     end
   end
 end

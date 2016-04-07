@@ -21,21 +21,21 @@ module EventStore
                 end
 
                 {
-                  'updated' => reference_time,
-                  'content' => {
-                    'eventType' => 'SomeEvent',
-                    'eventNumber' => number,
-                    'eventStreamId' => stream_name,
-                    'data' => {
-                      'someAttribute' => 'some value',
-                      'someTime' => time
+                  :updated => reference_time,
+                  :content => {
+                    :eventType => 'SomeEvent',
+                    :eventNumber => number,
+                    :eventStreamId => stream_name,
+                    :data => {
+                      :someAttribute => 'some value',
+                      :someTime => time
                     },
-                    'metadata' => metadata
+                    :metadata => metadata
                   },
-                  'links' => [
+                  :links => [
                     {
-                      'uri' => "http://localhost:2113/streams/#{stream_name}/#{number}",
-                      'relation' => 'edit'
+                      :uri => "http://localhost:2113/streams/#{stream_name}/#{number}",
+                      :relation => 'edit'
                     }
                   ]
                 }
