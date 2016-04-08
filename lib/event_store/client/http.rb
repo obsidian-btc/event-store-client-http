@@ -26,9 +26,6 @@ require 'event_store/client/http/request'
 require 'event_store/client/http/request/post'
 require 'event_store/client/http/request/get'
 
-require 'event_store/client/http/stream_metadata/url/get'
-require 'event_store/client/http/stream_metadata/get'
-
 require 'event_store/client/http/stream_reader'
 require 'event_store/client/http/stream_reader/continuous'
 require 'event_store/client/http/stream_reader/terminal'
@@ -39,3 +36,6 @@ require 'event_store/client/http/reader'
 require 'event_store/client/http/subscription'
 
 require 'event_store/client/http/event_writer'
+
+require 'event_store/client/http/stream_metadata/uri/get'
+require 'event_store/client/http/stream_metadata'

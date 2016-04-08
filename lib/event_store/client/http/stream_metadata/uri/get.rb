@@ -1,8 +1,8 @@
 module EventStore
   module Client
     module HTTP
-      module StreamMetadata
-        module URL
+      class StreamMetadata
+        module URI
           class Get
             dependency :logger, Telemetry::Logger
             dependency :session, Session
@@ -20,7 +20,7 @@ module EventStore
             end
 
             def self.configure(receiver, attr_name: nil)
-              attr_name ||= :get_url
+              attr_name ||= :get_uri
 
               instance = build
               receiver.public_send "#{attr_name}=", instance
@@ -28,25 +28,28 @@ module EventStore
             end
 
             def call(stream_name)
-              logger.trace "Retrieving stream metadata URI (Stream: #{stream_name.inspect})"
+              logger.opt_trace "Retrieving stream metadata URI (Stream: #{stream_name.inspect})"
 
               stream_data = get_stream_data stream_name
+              return nil if stream_data.nil?
 
               uri = get_metadata_uri stream_data
 
-              logger.debug "Retrieved stream metadata URI (Stream: #{stream_name.inspect}, URI: #{uri.inspect})"
+              logger.opt_debug "Retrieved stream metadata URI (Stream: #{stream_name.inspect}, URI: #{uri.inspect})"
 
-              uri
+              ::URI.parse uri
             end
 
             def get_stream_data(stream_name)
               uri = session.build_uri "/streams/#{stream_name}"
 
-              logger.trace "Retrieving stream data (URI: #{uri.to_s.inspect})"
+              logger.opt_trace "Retrieving stream data (URI: #{uri.to_s.inspect})"
 
               response = ::HTTP::Commands::Get.(uri, headers, connection: session.connection)
 
-              logger.debug "Received stream data response (Status: #{response.status_code}, Content Length: #{response['Content-Length']})"
+              logger.opt_debug "Received stream data response (Status: #{response.status_code}, Content Length: #{response['Content-Length']})"
+
+              return nil if response.status_code == 404
 
               body = response.body
               JSON.parse body

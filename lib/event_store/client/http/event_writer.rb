@@ -22,6 +22,8 @@
         end
 
         def write(event_data, stream_name, expected_version: nil)
+          stream_name = self.stream_name(stream_name)
+
           logger.opt_trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           logger.opt_data "(#{event_data.class}) #{event_data.inspect}"
 
@@ -54,6 +56,13 @@
 
         def path(stream_name)
           "/streams/#{stream_name}"
+        end
+
+        def stream_name(stream_name_or_uri)
+          case stream_name_or_uri
+          when URI then stream_name_or_uri.path.sub %r{\A/streams/}, ''
+          else stream_name_or_uri
+          end
         end
 
         def self.logger
