@@ -1,7 +1,7 @@
 require_relative '../bench_init'
 
 context "Retrieving the URL for the metadata associated with a stream" do
-  stream_name = EventStore::Client::HTTP::Controls::Writer.write 1, 'testRetrieveMetadataURL'
+  stream_name = EventStore::Client::HTTP::Controls::Writer.write 1, 'testGetMetadataURL'
 
   get_url = EventStore::Client::HTTP::StreamMetadata::URL::Get.build
   session = get_url.session

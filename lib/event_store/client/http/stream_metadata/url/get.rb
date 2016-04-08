@@ -4,13 +4,11 @@ module EventStore
       module StreamMetadata
         module URL
           class Get
-            dependency :get, ::HTTP::Commands::Get
             dependency :logger, Telemetry::Logger
             dependency :session, Session
 
             def self.build
               instance = new
-              ::HTTP::Commands::Get.configure instance
               Session.configure instance
               Telemetry::Logger.configure instance
               instance
@@ -24,7 +22,7 @@ module EventStore
             def self.configure(receiver, attr_name: nil)
               attr_name ||= :get_url
 
-              instance = bulid
+              instance = build
               receiver.public_send "#{attr_name}=", instance
               instance
             end
@@ -48,7 +46,7 @@ module EventStore
 
               response = ::HTTP::Commands::Get.(uri, headers, connection: session.connection)
 
-              logger.debug "Received stream data response (Status: #{response.status_code}, Response Size: #{response.body.bytesize})"
+              logger.debug "Received stream data response (Status: #{response.status_code}, Content Length: #{response['Content-Length']})"
 
               body = response.body
               JSON.parse body
