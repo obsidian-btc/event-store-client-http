@@ -16,6 +16,6 @@ require_relative '../init.rb'
 
 require 'event_store/client/http/controls'
 
-require 'test_bench'; TestBench.activate
+require 'test_bench/activate'
 
 Telemetry::Logger::AdHoc.activate

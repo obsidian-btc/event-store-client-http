@@ -2,14 +2,12 @@ require 'json'
 require 'uri'
 require 'http/commands'
 
-require 'dependency'
-Dependency.activate
+require 'dependency' ; Dependency.activate
 require 'telemetry/logger'
 require 'identifier/uuid'
 require 'clock'
-require 'settings'
+require 'settings' ; Settings.activate
 require 'schema'
-Settings.activate
 require 'casing'
 require 'connection'
 require 'event_store/client'
