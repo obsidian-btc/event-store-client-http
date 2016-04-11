@@ -38,24 +38,24 @@ module EventStore
         end
 
         def get
-          logger.trace "Retrieving stream metadata (URI: #{uri.to_s.inspect})"
+          logger.opt_trace "Retrieving stream metadata (URI: #{uri.to_s.inspect})"
 
           return nil if uri.nil?
 
           response = ::HTTP::Commands::Get.(uri, headers, connection: session.connection)
 
-          logger.debug "Retrieved stream metadata (URI: #{uri.to_s.inspect}, Content Length: #{response['Content-Length']})"
+          logger.opt_debug "Retrieved stream metadata (URI: #{uri.to_s.inspect}, Content Length: #{response['Content-Length']})"
 
           event_data = EventData::Read.parse response.body
           metadata = event_data.data
 
-          logger.data JSON.pretty_generate(metadata)
+          logger.opt_data JSON.pretty_generate(metadata)
 
           metadata
         end
 
         def update(&apply_changes)
-          logger.trace "Updating metadata (Stream Name: #{stream_name.inspect})"
+          logger.opt_trace "Updating metadata (Stream Name: #{stream_name.inspect})"
 
           metadata = get
           return if metadata.nil?
@@ -64,14 +64,14 @@ module EventStore
 
           event_data, response = write metadata
 
-          logger.trace "Updated metadata (Stream Name: #{stream_name.inspect})"
+          logger.opt_trace "Updated metadata (Stream Name: #{stream_name.inspect})"
 
           return event_data, response
         end
 
         def write(metadata)
-          logger.trace "Writing stream metadata (URI: #{uri.to_s.inspect})"
-          logger.data JSON.pretty_generate(metadata)
+          logger.opt_trace "Writing stream metadata (URI: #{uri.to_s.inspect})"
+          logger.opt_data JSON.pretty_generate(metadata)
 
           event_data = HTTP::EventData::Write.build(
             :type => 'MetadataUpdated',
@@ -81,7 +81,7 @@ module EventStore
 
           response = writer.write event_data, uri
 
-          logger.debug "Wrote stream metadata (URI: #{uri.to_s.inspect}, Status Code: #{response.status_code}, Event ID: #{event_data.id.inspect})"
+          logger.opt_debug "Wrote stream metadata (URI: #{uri.to_s.inspect}, Status Code: #{response.status_code}, Event ID: #{event_data.id.inspect})"
 
           return event_data, response
         end
