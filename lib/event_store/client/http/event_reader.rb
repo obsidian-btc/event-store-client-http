@@ -67,10 +67,6 @@ module EventStore
           logger.debug "Read slice (Number of Entries: #{slice.length})"
         end
 
-        def change_connection_scheduler(scheduler)
-          session.connection.scheduler = scheduler
-        end
-
         def get_entry(event_json_data)
           json_text = get_json_text(event_json_data)
           parse_entry(json_text)
