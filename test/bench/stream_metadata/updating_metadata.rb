@@ -3,7 +3,7 @@ require_relative '../bench_init'
 context "Updating stream metadata" do
   initial_metadata = { :first_attribute => 'value A', :second_attribute => 'value B' }
   updated_metadata = { :first_attribute => 'value C', :third_attribute => 'value D' }
-  stream_name = EventStore::Client::HTTP::Controls::Writer.write :initial_metadata => initial_metadata
+  stream_name = EventStore::Client::HTTP::Controls::Writer.write :stream_metadata => initial_metadata
 
   stream_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
 

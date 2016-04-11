@@ -3,7 +3,7 @@ module EventStore
     module HTTP
       module Controls
         module Writer
-          def self.write(iterations=nil, stream_name=nil, initial_metadata: nil, verbatim_stream_name: nil)
+          def self.write(iterations=nil, stream_name=nil, stream_metadata: nil, verbatim_stream_name: nil)
             iterations ||= 1
             verbatim_stream_name ||= false
 
@@ -27,10 +27,10 @@ module EventStore
               post_response = post.(json_text, path)
             end
 
-            if initial_metadata
-              stream_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
-              stream_metadata.update do |metadata|
-                metadata.update initial_metadata
+            if stream_metadata
+              update_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
+              update_metadata.update do |metadata|
+                metadata.update stream_metadata
               end
             end
 

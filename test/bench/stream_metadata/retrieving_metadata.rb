@@ -3,7 +3,7 @@ require_relative '../bench_init'
 context "Retrieve stream metadata" do
   context "Stream exists" do
     control_metadata = { :first_attribute => 'value A', :second_attribute => 'value B' }
-    stream_name = EventStore::Client::HTTP::Controls::Writer.write :initial_metadata => control_metadata
+    stream_name = EventStore::Client::HTTP::Controls::Writer.write :stream_metadata => control_metadata
 
     stream_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
 
