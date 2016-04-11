@@ -30,7 +30,7 @@ module EventStore
         end
 
         def self.configure(receiver, stream_name, attr_name: nil, session: nil)
-          attr_name ||= :update_stream_metadata
+          attr_name ||= :stream_metadata
 
           instance = build stream_name, :session => session
           receiver.public_send "#{attr_name}=", instance

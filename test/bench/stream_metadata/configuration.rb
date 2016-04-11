@@ -9,7 +9,7 @@ context "Configuration" do
     test "Default attribute name" do
       EventStore::Client::HTTP::StreamMetadata.configure receiver, stream_name
 
-      assert receiver.update_stream_metadata.is_a?(EventStore::Client::HTTP::StreamMetadata)
+      assert receiver.stream_metadata.is_a?(EventStore::Client::HTTP::StreamMetadata)
     end
 
     test "Custom attribute name" do
