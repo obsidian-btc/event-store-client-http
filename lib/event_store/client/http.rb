@@ -38,4 +38,5 @@ require 'event_store/client/http/subscription'
 require 'event_store/client/http/event_writer'
 
 require 'event_store/client/http/stream_metadata/uri/get'
-require 'event_store/client/http/stream_metadata'
+require 'event_store/client/http/stream_metadata/read'
+require 'event_store/client/http/stream_metadata/update'

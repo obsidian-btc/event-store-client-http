@@ -1,11 +1,11 @@
-require_relative '../bench_init'
+require_relative '../../bench_init'
 
 context "Updating metadata for stream that does not exist" do
   stream_name = EventStore::Client::HTTP::Controls::StreamName.get
 
-  stream_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
+  update_metadata = EventStore::Client::HTTP::StreamMetadata::Update.build stream_name
 
-  event_data, response = stream_metadata.update do |metadata|
+  event_data, response = update_metadata.() do |metadata|
     fail "There is no metadata to update since stream does not exist"
   end
 

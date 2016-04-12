@@ -1,30 +1,39 @@
 module EventStore
   module Client
     module HTTP
-      class StreamMetadata
+      module StreamMetadata
         module URI
           class Get
             dependency :logger, Telemetry::Logger
             dependency :session, Session
 
-            def self.build
+            def self.build(session: nil)
               instance = new
-              Session.configure instance
+
+              Session.configure instance, session: session
+
               Telemetry::Logger.configure instance
+
               instance
             end
 
-            def self.call(stream_name)
-              instance = build
+            def self.call(stream_name, session: nil)
+              instance = build session: session
               instance.(stream_name)
             end
 
-            def self.configure(receiver, attr_name: nil)
-              attr_name ||= :get_uri
+            def self.configure_uri(receiver, stream_name_or_uri, session: nil, attr_name: nil)
+              attr_name ||= :uri
 
-              instance = build
-              receiver.public_send "#{attr_name}=", instance
-              instance
+              uri =
+                case stream_name_or_uri
+                when ::URI then stream_name_or_uri
+                else self.(stream_name_or_uri, session: session)
+                end
+
+              receiver.public_send "#{attr_name}=", uri
+
+              uri
             end
 
             def call(stream_name)

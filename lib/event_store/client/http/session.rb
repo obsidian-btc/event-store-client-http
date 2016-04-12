@@ -26,10 +26,12 @@ module EventStore
           end
         end
 
-        def self.configure(receiver)
-          session = build
-          receiver.session = session
-          session
+        def self.configure(receiver, session: nil, attr_name: nil)
+          attr_name ||= :session
+
+          instance = session || build
+          receiver.public_send "#{attr_name}=", instance
+          instance
         end
 
         def build_uri(path)
