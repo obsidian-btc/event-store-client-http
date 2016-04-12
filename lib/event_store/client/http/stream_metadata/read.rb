@@ -71,7 +71,7 @@ module EventStore
               def self.parse(json_text)
                 event_data = JSON.parse(json_text, :symbolize_names => true)
 
-                return build(:data => {}) if event_data.empty?
+                return build(data: {}) if event_data.empty?
 
                 data = deserialize event_data
                 build data

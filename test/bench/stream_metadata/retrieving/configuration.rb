@@ -13,7 +13,7 @@ context "Configuring a Receiver of Read Stream Metadata" do
     end
 
     test "Custom attribute name" do
-      EventStore::Client::HTTP::StreamMetadata::Read.configure receiver, stream_name, :attr_name => :some_attr_name
+      EventStore::Client::HTTP::StreamMetadata::Read.configure receiver, stream_name, attr_name: :some_attr_name
 
       assert receiver.some_attr_name.is_a?(EventStore::Client::HTTP::StreamMetadata::Read)
     end
