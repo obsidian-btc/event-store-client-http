@@ -1,19 +1,21 @@
 require 'json'
 require 'uri'
-require 'http/commands'
 
-require 'dependency' ; Dependency.activate
-require 'telemetry/logger'
-require 'identifier/uuid'
-require 'clock'
-require 'settings' ; Settings.activate
-require 'schema'
 require 'casing'
-require 'connection'
+require 'clock'
+require 'dependency' ; Dependency.activate
 require 'event_store/client'
+require 'http/commands'
+require 'identifier/uuid'
+require 'schema'
+require 'serialize'
+require 'settings' ; Settings.activate
+require 'telemetry/logger'
 
 require 'event_store/client/http/settings'
 
+require 'event_store/client/http/slice/entry'
+require 'event_store/client/http/slice/links'
 require 'event_store/client/http/slice'
 
 require 'event_store/client/http/event_data'
