@@ -88,7 +88,7 @@
         def parse(body)
           slice = nil
           unless blank? body
-            slice = Slice.parse(body)
+            slice = Serialize::Read.(body, Slice, :json)
           end
           slice
         end

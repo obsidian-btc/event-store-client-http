@@ -78,7 +78,7 @@ module EventStore
         end
 
         def get_json_text(slice_entry)
-          uri = slice_entry.uri
+          uri = slice_entry.event_uri
 
           logger.trace "Retrieving event JSON (Stream Name: #{stream_name}, URI: #{uri})"
           body_text, _ = request.(uri)
