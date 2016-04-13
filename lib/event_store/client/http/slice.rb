@@ -7,7 +7,9 @@ module EventStore
         dependency :logger, Telemetry::Logger
 
         def entries
-          data['entries']
+          @entries ||= data[:entries].map do |entry_data|
+            Entry.build entry_data
+          end
         end
 
         def length
@@ -15,7 +17,7 @@ module EventStore
         end
 
         def links
-          @links ||= Links.build data['links']
+          @links ||= Links.build data[:links]
         end
 
         def initialize(data)
@@ -41,7 +43,7 @@ module EventStore
         def self.parse_json(json_text)
           logger.opt_trace "Parsing JSON"
 
-          JSON.parse(json_text).tap do
+          JSON.parse(json_text, :symbolize_names => true).tap do
             logger.opt_debug "Parsed JSON"
           end
         end
@@ -62,6 +64,34 @@ module EventStore
 
         def self.logger
           Telemetry::Logger.get self
+        end
+      end
+
+      class Entry
+        include Schema::DataStructure
+
+        attribute :uri
+        attribute :position
+
+        def self.build(entry_data)
+          raw_data = parse entry_data
+
+          instance = new
+          instance.position = raw_data[:position]
+          instance.uri = raw_data[:uri]
+          instance
+        end
+
+        def self.parse(entry_data)
+          raw_data = {}
+
+          entry_data[:links].each do |link|
+            raw_data[:uri] = link[:uri] if link[:relation] == 'edit'
+          end
+
+          raw_data[:position] = entry_data[:positionEventNumber]
+
+          raw_data
         end
       end
 
@@ -90,13 +120,13 @@ module EventStore
 
         def self.get_next_uri(links)
           links.map do |link|
-            link['uri'] if link['relation'] == 'previous'
+            link[:uri] if link[:relation] == 'previous'
           end.compact.first
         end
 
         def self.get_previous_uri(links)
           links.map do |link|
-            link['uri'] if link['relation'] == 'next'
+            link[:uri] if link[:relation] == 'next'
           end.compact.first
         end
 

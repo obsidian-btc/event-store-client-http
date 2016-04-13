@@ -43,7 +43,8 @@ module EventStore
             URI::HTTP.build(
               :host => host,
               :port => port,
-              :path => path
+              :path => uri.path,
+              :query => uri.query
             )
           end
         end

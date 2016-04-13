@@ -4,6 +4,7 @@ module EventStore
       class EventData
         class Read < EventData
           attribute :number
+          attribute :position
           attribute :stream_name
           attribute :created_time
           attribute :links

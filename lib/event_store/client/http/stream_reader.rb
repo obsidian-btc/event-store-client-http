@@ -72,6 +72,8 @@
         end
 
         def get_slice(uri)
+          uri = self.uri uri
+
           logger.opt_trace "Getting (URI: #{uri})"
           body, _ = request.(uri)
 
@@ -95,6 +97,10 @@
           body.nil? || body.empty?
         end
 
+        def uri(uri)
+          "#{uri}?embed=#{Defaults.embed}"
+        end
+
         def self.slice_path(stream_name, starting_position, slice_size, direction)
           "/streams/#{stream_name}/#{starting_position}/#{direction}/#{slice_size}"
         end
@@ -104,6 +110,10 @@
         end
 
         module Defaults
+          def self.embed
+            'rich'
+          end
+
           def self.starting_position(direction=nil)
             direction ||= self.direction
 

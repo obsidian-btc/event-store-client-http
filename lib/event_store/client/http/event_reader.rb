@@ -67,17 +67,22 @@ module EventStore
           logger.debug "Read slice (Number of Entries: #{slice.length})"
         end
 
-        def get_entry(event_json_data)
-          json_text = get_json_text(event_json_data)
-          parse_entry(json_text)
+        def get_entry(slice_entry)
+          json_text = get_json_text(slice_entry)
+
+          event_data = parse_entry(json_text)
+
+          event_data.position = slice_entry.position
+
+          event_data
         end
 
-        def get_json_text(event_json_data)
-          uri = entry_link(event_json_data)
+        def get_json_text(slice_entry)
+          uri = slice_entry.uri
 
-          logger.trace "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.trace "Retrieving event JSON (Stream Name: #{stream_name}, URI: #{uri})"
           body_text, _ = request.(uri)
-          logger.debug "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.debug "Retrieved event JSON (Stream Name: #{stream_name}, URI: #{uri})"
 
           body_text
         end
@@ -87,8 +92,8 @@ module EventStore
         end
 
         def entry_link(event_json_data)
-          event_json_data['links'].map do |link|
-            link['uri'] if link['relation'] == 'edit'
+          event_json_data[:links].map do |link|
+            link[:uri] if link[:relation] == 'edit'
           end.compact.first
         end
 
