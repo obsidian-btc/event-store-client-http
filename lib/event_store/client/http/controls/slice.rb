@@ -8,28 +8,28 @@ module EventStore
               stream_name ||= 'someStream'
 
               {
-                :links => [
+                "links" => [
                   {
-                    :uri => "http://localhost:2113/streams/#{stream_name}/2/forward/2",
-                    :relation => "previous"
+                    "uri" => "http://localhost:2113/streams/#{stream_name}/2/forward/2",
+                    "relation" => "previous"
                   }
                 ],
-                :entries => [
+                "entries" => [
                   {
-                    :positionEventNumber => 1,
-                    :links => [
+                    "positionEventNumber" => 1,
+                    "links" => [
                       {
-                        :uri => "http://localhost:2113/streams/#{stream_name}/1",
-                        :relation => "edit"
+                        "uri" => "http://localhost:2113/streams/#{stream_name}/1",
+                        "relation" => "edit"
                       }
                     ]
                   },
                   {
-                    :positionEventNumber => 0,
-                    :links => [
+                    "positionEventNumber" => 0,
+                    "links" => [
                       {
-                        :uri => "http://localhost:2113/streams/#{stream_name}/0",
-                        :relation => "edit"
+                        "uri" => "http://localhost:2113/streams/#{stream_name}/0",
+                        "relation" => "edit"
                       }
                     ]
                   }
