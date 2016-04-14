@@ -4,45 +4,48 @@ module EventStore
       module Controls
         module EventData
           module Read
-            module JSON
-              def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, omit_metadata: nil)
-                reference_time = ::Controls::Time.reference
+            def self.raw_data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil, omit_metadata: nil)
+              reference_time = ::Controls::Time.reference
 
-                number ||= 0
-                time ||= reference_time
-                stream_name ||= StreamName.reference
+              number ||= 0
+              time ||= reference_time
+              stream_name ||= StreamName.reference
+              type ||= 'SomeEvent'
+              metadata ||= Metadata.raw_data
 
-                omit_metadata ||= false
+              omit_metadata ||= false
 
-                unless omit_metadata
-                  metadata ||= EventData::Metadata::JSON.data
-                else
-                  metadata = ''
-                end
-
-                {
-                  :updated => reference_time,
-                  :content => {
-                    :eventType => 'SomeEvent',
-                    :eventNumber => number,
-                    :eventStreamId => stream_name,
-                    :data => {
-                      :someAttribute => 'some value',
-                      :someTime => time
-                    },
-                    :metadata => metadata
+              data = {
+                :updated => reference_time,
+                :content => {
+                  :event_type => type,
+                  :event_number => number,
+                  :event_stream_id => stream_name,
+                  :data => {
+                    :some_attribute => 'some value',
+                    :some_time => time
                   },
-                  :links => [
-                    {
-                      :uri => "http://localhost:2113/streams/#{stream_name}/#{number}",
-                      :relation => 'edit'
-                    }
-                  ]
-                }
+                  :metadata => metadata
+                },
+                :links => [
+                  {
+                    :uri => "http://localhost:2113/streams/#{stream_name}/#{number}",
+                    :relation => 'edit'
+                  }
+                ]
+              }
+
+              if omit_metadata
+                data[:content].delete :metadata
               end
 
+              data
+            end
+
+            module JSON
               def self.text(number=nil, time: nil, stream_name: nil, metadata: nil, omit_metadata: nil)
-                data(number, time: time, stream_name: stream_name, metadata: stream_name, omit_metadata: omit_metadata).to_json
+                raw_data = Read.raw_data number, time: time, stream_name: stream_name, metadata: stream_name, omit_metadata: omit_metadata
+                ::JSON.generate raw_data
               end
             end
           end
