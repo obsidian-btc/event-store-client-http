@@ -4,22 +4,22 @@ module EventStore
       module Controls
         module EventData
           module Write
-            def self.raw_data(id=nil)
+            def self.data(id=nil)
               id ||= ::Controls::ID.get sample: false
 
               {
                 :event_id => id,
                 :event_type => 'SomeType',
                 :data => { :some_attribute => 'some value' },
-                :metadata => EventData::Metadata.raw_data
+                :metadata => EventData::Metadata.data
               }
             end
 
             module JSON
               def self.data(id=nil)
-                raw_data = Write.raw_data id
+                data = Write.data id
 
-                Casing::Camel.(raw_data, symbol_to_string: true)
+                Casing::Camel.(data, symbol_to_string: true)
               end
 
               def self.text
@@ -41,7 +41,7 @@ module EventStore
                 :some_attribute => 'some value'
               }
 
-              event_data.metadata = EventData::Metadata.raw_data
+              event_data.metadata = EventData::Metadata.data
 
               event_data
             end

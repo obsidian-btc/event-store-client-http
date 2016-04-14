@@ -4,7 +4,7 @@ module EventStore
       module Controls
         module EventData
           module Metadata
-            def self.raw_data
+            def self.data
               {
                 some_meta_attribute: 'some meta value'
               }

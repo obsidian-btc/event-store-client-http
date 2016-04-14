@@ -4,14 +4,14 @@ module EventStore
       module Controls
         module EventData
           module Read
-            def self.raw_data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil, omit_metadata: nil)
+            def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil, omit_metadata: nil)
               reference_time = ::Controls::Time.reference
 
               number ||= 0
               time ||= reference_time
               stream_name ||= StreamName.reference
               type ||= 'SomeEvent'
-              metadata ||= Metadata.raw_data
+              metadata ||= Metadata.data
 
               omit_metadata ||= false
 
@@ -43,17 +43,17 @@ module EventStore
             end
 
             def self.example(number=nil, position: nil, **arguments)
-              raw_data = self.raw_data *arguments
+              data = self.data *arguments
 
-              instance = Serialize::Read.instance raw_data, Client::HTTP::EventData::Read
+              instance = Serialize::Read.instance data, Client::HTTP::EventData::Read
               instance.position = position if position
               instance
             end
 
             module JSON
               def self.text(number=nil, time: nil, stream_name: nil, metadata: nil, omit_metadata: nil)
-                raw_data = Read.raw_data number, time: time, stream_name: stream_name, metadata: stream_name, omit_metadata: omit_metadata
-                ::JSON.generate raw_data
+                data = Read.data number, time: time, stream_name: stream_name, metadata: stream_name, omit_metadata: omit_metadata
+                ::JSON.generate data
               end
             end
           end

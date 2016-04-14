@@ -20,17 +20,17 @@ module EventStore
               attribute :edit_uri
             end
 
-            def self.instance(raw_data)
-              content = raw_data[:content] || {}
+            def self.instance(data)
+              content = data[:content] || {}
 
               links = Links.new
 
-              raw_data[:links].to_a.each do |link_data|
+              data[:links].to_a.each do |link_data|
                 links.edit_uri = link_data[:uri] if link_data[:relation] == 'edit'
               end
 
               instance = Read.build(
-                :created_time => raw_data[:updated],
+                :created_time => data[:updated],
                 :data => content[:data],
                 :links => links,
                 :number => content[:event_number],
@@ -47,8 +47,8 @@ module EventStore
 
             module JSON
               def self.deserialize(text)
-                raw_data = ::JSON.parse text, :symbolize_names => true
-                Casing::Underscore.(raw_data)
+                data = ::JSON.parse text, :symbolize_names => true
+                Casing::Underscore.(data)
               end
             end
           end

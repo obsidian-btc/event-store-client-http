@@ -48,8 +48,8 @@ module EventStore
             end
 
             module JSON
-              def self.serialize(raw_data)
-                formatted_data = Casing::Camel.(raw_data)
+              def self.serialize(data)
+                formatted_data = Casing::Camel.(data)
                 ::JSON.pretty_generate formatted_data
               end
             end

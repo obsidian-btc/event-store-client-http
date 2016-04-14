@@ -36,10 +36,10 @@ module EventStore
             JSON
           end
 
-          def self.instance(raw_data)
-            links = self.links raw_data['links']
+          def self.instance(data)
+            links = self.links data['links']
 
-            entries = self.entries raw_data['entries']
+            entries = self.entries data['entries']
 
             Slice.build :entries => entries, :links => links
           end

@@ -2,7 +2,7 @@ require_relative '../../bench_init'
 
 context "Setting metadata for stream with no prior metadata" do
   stream_name = EventStore::Client::HTTP::Controls::Writer.write
-  control_metadata = EventStore::Client::HTTP::Controls::StreamMetadata.raw_data
+  control_metadata = EventStore::Client::HTTP::Controls::StreamMetadata.data
 
   update_metadata = EventStore::Client::HTTP::StreamMetadata::Update.build stream_name
 
