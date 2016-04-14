@@ -22,7 +22,7 @@ module EventStore
 
               event_data = Controls::EventData::Batch.example(id)
 
-              json_text = event_data.serialize
+              json_text = Serialize::Write.(event_data, :json)
 
               post_response = post.(json_text, path)
             end

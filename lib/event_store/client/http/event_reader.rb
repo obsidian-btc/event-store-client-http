@@ -88,17 +88,7 @@ module EventStore
         end
 
         def parse_entry(json_text)
-          EventData::Read.parse json_text
-        end
-
-        def entry_link(event_json_data)
-          event_json_data[:links].map do |link|
-            link[:uri] if link[:relation] == 'edit'
-          end.compact.first
-        end
-
-        def deserialize_entry(event_json_data)
-          event_json_data
+          Serialize::Read.(json_text, EventData::Read, :json)
         end
 
         def self.logger

@@ -4,16 +4,22 @@ module EventStore
       module Controls
         module EventData
           module Write
+            def self.raw_data(id=nil)
+              id ||= ::Controls::ID.get sample: false
+
+              {
+                :event_id => id,
+                :event_type => 'SomeType',
+                :data => { :some_attribute => 'some value' },
+                :metadata => EventData::Metadata.raw_data
+              }
+            end
+
             module JSON
               def self.data(id=nil)
-                id ||= ::Controls::ID.get sample: false
+                raw_data = Write.raw_data id
 
-                {
-                  'eventId' => id,
-                  'eventType' => 'SomeType',
-                  'data' => {'someAttribute' => 'some value'},
-                  'metadata' => EventData::Metadata::JSON.data
-                }
+                Casing::Camel.(raw_data, symbol_to_string: true)
               end
 
               def self.text
@@ -32,10 +38,10 @@ module EventStore
               event_data.type = type
 
               event_data.data = {
-                'some_attribute' => 'some value'
+                :some_attribute => 'some value'
               }
 
-              event_data.metadata = EventData::Metadata.data
+              event_data.metadata = EventData::Metadata.raw_data
 
               event_data
             end

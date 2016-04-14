@@ -10,20 +10,15 @@ module EventStore
             self.id = uuid.get
           end
 
-          def serialize
-            json_formatted_data.to_json
-          end
-
-          def json_formatted_data
-            json_data = {
-              'eventId' => id,
-              'eventType' => type
-            }
-
-            json_data['data'] = Casing::Camel.(data, symbol_to_string: true) if data
-            json_data['metadata'] = Casing::Camel.(metadata, symbol_to_string: true) if metadata
-
-            json_data
+          module Serializer
+            def self.raw_data(instance)
+              {
+                :event_id => instance.id,
+                :event_type => instance.type,
+                :data => instance.data,
+                :metadata => instance.metadata
+              }
+            end
           end
         end
       end

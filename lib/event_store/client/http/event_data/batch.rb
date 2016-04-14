@@ -36,13 +36,22 @@ module EventStore
             list << event_data
           end
 
-          def serialize
-            json_formatted_data.to_json
-          end
+          module Serializer
+            def self.json
+              JSON
+            end
 
-          def json_formatted_data
-            list.map do |event_data|
-              event_data.json_formatted_data
+            def self.raw_data(instance)
+              instance.list.map do |event_data|
+                Serialize::Write.raw_data event_data
+              end
+            end
+
+            module JSON
+              def self.serialize(raw_data)
+                formatted_data = Casing::Camel.(raw_data)
+                ::JSON.pretty_generate formatted_data
+              end
             end
           end
         end

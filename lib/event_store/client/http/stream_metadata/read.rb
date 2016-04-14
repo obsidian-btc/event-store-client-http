@@ -48,8 +48,10 @@ module EventStore
 
             logger.opt_debug "Retrieved stream metadata (URI: #{uri.to_s.inspect}, Content Length: #{response['Content-Length']})"
 
-            event_data = EventData::Read.parse response.body
+            event_data = Serialize::Read.(response.body, EventData::Read, :json)
             metadata = event_data.data
+
+            return {} if metadata.nil?
 
             logger.opt_data JSON.pretty_generate(metadata)
 
