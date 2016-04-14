@@ -42,6 +42,14 @@ module EventStore
               data
             end
 
+            def self.example(number=nil, position: nil, **arguments)
+              raw_data = self.raw_data *arguments
+
+              instance = Serialize::Read.instance raw_data, Client::HTTP::EventData::Read
+              instance.position = position if position
+              instance
+            end
+
             module JSON
               def self.text(number=nil, time: nil, stream_name: nil, metadata: nil, omit_metadata: nil)
                 raw_data = Read.raw_data number, time: time, stream_name: stream_name, metadata: stream_name, omit_metadata: omit_metadata
