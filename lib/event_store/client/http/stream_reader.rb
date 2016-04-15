@@ -27,7 +27,7 @@
           logger.opt_trace "Building stream reader (Stream Name: #{stream_name}, Starting Position: #{starting_position}, Slice Size: #{slice_size}, Direction: #{direction})"
 
           start_path = slice_path(stream_name, starting_position, slice_size, direction)
-          logger.debug "Starting URI: #{start_path}"
+          logger.opt_debug "Starting URI: #{start_path}"
 
           new(stream_name, start_path, direction).tap do |instance|
             EventStore::Client::HTTP::Request::Get.configure instance, session: session
@@ -48,7 +48,7 @@
         def to_enum
           Enumerator.new do |y|
             self.next_uri = start_path
-            logger.trace "Enumerating slices (Stream Name: #{stream_name})"
+            logger.opt_trace "Enumerating slices (Stream Name: #{stream_name})"
 
             loop do
               slice = next_slice(next_uri)
@@ -60,7 +60,7 @@
               y << [slice, next_uri]
             end
 
-            logger.debug "Completed enumerating slices (Stream Name: #{stream_name})"
+            logger.opt_debug "Completed enumerating slices (Stream Name: #{stream_name})"
           end
         end
         alias :enum_for :to_enum

@@ -44,11 +44,11 @@ module EventStore
         end
 
         def each(&action)
-          logger.trace "Enumerating events (Stream Name: #{stream_name})"
+          logger.opt_trace "Enumerating events (Stream Name: #{stream_name})"
 
           each_slice(stream_reader, &action)
 
-          logger.debug "Completed enumerating events (Stream Name: #{stream_name})"
+          logger.opt_debug "Completed enumerating events (Stream Name: #{stream_name})"
           nil
         end
 
@@ -59,12 +59,12 @@ module EventStore
         end
 
         def read_slice(slice, &action)
-          logger.trace "Reading slice (Number of Entries: #{slice.length})"
+          logger.opt_trace "Reading slice (Number of Entries: #{slice.length})"
           slice.each(direction) do |event_json_data|
             entry = get_entry(event_json_data)
             action.call entry
           end
-          logger.debug "Read slice (Number of Entries: #{slice.length})"
+          logger.opt_debug "Read slice (Number of Entries: #{slice.length})"
         end
 
         def get_entry(slice_entry)
@@ -80,9 +80,9 @@ module EventStore
         def get_json_text(slice_entry)
           uri = slice_entry.event_uri
 
-          logger.trace "Retrieving event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.opt_trace "Retrieving event JSON (Stream Name: #{stream_name}, URI: #{uri})"
           body_text, _ = request.(uri)
-          logger.debug "Retrieved event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.opt_debug "Retrieved event JSON (Stream Name: #{stream_name}, URI: #{uri})"
 
           body_text
         end

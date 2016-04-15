@@ -37,15 +37,15 @@
         end
 
         def write_batch(batch, stream_name, expected_version: nil)
-          logger.trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.opt_trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
 
           json_text = Serialize::Write.(batch, :json)
-          logger.data "(#{json_text.class}) #{json_text}"
+          logger.opt_data "(#{json_text.class}) #{json_text}"
 
           path = path(stream_name)
 
           request.(json_text, path, expected_version: expected_version).tap do |instance|
-            logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+            logger.opt_debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           end
         end
 
