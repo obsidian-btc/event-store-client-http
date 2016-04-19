@@ -10,7 +10,7 @@ module EventStore
         dependency :connection, Connection::Client
 
         def self.build(settings=nil, namespace=nil)
-          logger.trace "Building HTTP session"
+          logger.opt_trace "Building HTTP session"
 
           new.tap do |instance|
             Telemetry::Logger.configure instance
@@ -22,14 +22,16 @@ module EventStore
 
             Connection::Client.configure instance, instance.host, instance.port, :reconnect => :closed
 
-            logger.debug "Built HTTP session (Host: #{instance.host}, Port: #{instance.port})"
+            logger.opt_debug "Built HTTP session (Host: #{instance.host}, Port: #{instance.port})"
           end
         end
 
-        def self.configure(receiver)
-          session = build
-          receiver.session = session
-          session
+        def self.configure(receiver, session: nil, attr_name: nil)
+          attr_name ||= :session
+
+          instance = session || build
+          receiver.public_send "#{attr_name}=", instance
+          instance
         end
 
         def build_uri(path)
@@ -41,7 +43,8 @@ module EventStore
             URI::HTTP.build(
               :host => host,
               :port => port,
-              :path => path
+              :path => uri.path,
+              :query => uri.query
             )
           end
         end

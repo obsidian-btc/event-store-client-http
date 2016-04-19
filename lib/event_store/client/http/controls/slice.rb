@@ -16,6 +16,7 @@ module EventStore
                 ],
                 "entries" => [
                   {
+                    "positionEventNumber" => 1,
                     "links" => [
                       {
                         "uri" => "http://localhost:2113/streams/#{stream_name}/1",
@@ -24,6 +25,7 @@ module EventStore
                     ]
                   },
                   {
+                    "positionEventNumber" => 0,
                     "links" => [
                       {
                         "uri" => "http://localhost:2113/streams/#{stream_name}/0",

@@ -13,7 +13,7 @@ context "Write Event" do
   get = EventStore::Client::HTTP::Request::Get.build
   body_text, get_response = get.("#{path}/0")
 
-  read_data = EventStore::Client::HTTP::EventData::Read.parse body_text
+  read_data = Serialize::Read.(body_text, EventStore::Client::HTTP::EventData::Read, :json)
 
   __logger.data read_data.inspect
 

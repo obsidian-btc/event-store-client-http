@@ -15,13 +15,17 @@
           end
         end
 
-        def self.configure(receiver, session: nil)
+        def self.configure(receiver, session: nil, attr_name: nil)
+          attr_name ||= :writer
+
           instance = build(session: session)
-          receiver.writer = instance
+          receiver.public_send "#{attr_name}=", instance
           instance
         end
 
         def write(event_data, stream_name, expected_version: nil)
+          stream_name = self.stream_name(stream_name)
+
           logger.opt_trace "Writing event data (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           logger.opt_data "(#{event_data.class}) #{event_data.inspect}"
 
@@ -33,15 +37,15 @@
         end
 
         def write_batch(batch, stream_name, expected_version: nil)
-          logger.trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.opt_trace "Writing batch (Stream Name: #{stream_name}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
 
-          json_text = batch.serialize
-          logger.data "(#{json_text.class}) #{json_text}"
+          json_text = Serialize::Write.(batch, :json)
+          logger.opt_data "(#{json_text.class}) #{json_text}"
 
           path = path(stream_name)
 
           request.(json_text, path, expected_version: expected_version).tap do |instance|
-            logger.debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+            logger.opt_debug "Wrote batch (Stream Name: #{stream_name}, Path: #{path}, Number of Events: #{batch.length}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
           end
         end
 
@@ -54,6 +58,13 @@
 
         def path(stream_name)
           "/streams/#{stream_name}"
+        end
+
+        def stream_name(stream_name_or_uri)
+          case stream_name_or_uri
+          when URI then stream_name_or_uri.path.sub %r{\A/streams/}, ''
+          else stream_name_or_uri
+          end
         end
 
         def self.logger

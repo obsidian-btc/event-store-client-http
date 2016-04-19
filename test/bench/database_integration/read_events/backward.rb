@@ -19,6 +19,11 @@ context "Read Events Backward" do
     assert(events.length == 2)
   end
 
+  test "Position is set" do
+    assert events[0].position == 1
+    assert events[1].position == 0
+  end
+
   test "First written is read last" do
     first = events[0].created_time
     last = events[1].created_time

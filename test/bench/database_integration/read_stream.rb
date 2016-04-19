@@ -16,13 +16,13 @@ context "Read Slices" do
 
   test "All but the last slice has entries" do
     2.times do |i|
-      number_of_entries = slices[i].data['entries'].length
+      number_of_entries = slices[i].length
       assert(number_of_entries == 1)
     end
   end
 
   test "The last slice has no entries" do
-    number_of_entries = slices.last.data['entries'].length
+    number_of_entries = slices.last.length
     assert(number_of_entries == 0)
   end
 end

@@ -12,8 +12,8 @@ context "Write Batch of Events" do
   event_data_1 = EventStore::Client::HTTP::Controls::EventData::Write.example(id_1)
   event_data_2 = EventStore::Client::HTTP::Controls::EventData::Write.example(id_2)
 
-  event_data_1.data['some_attribute'] = id_1
-  event_data_2.data['some_attribute'] = id_2
+  event_data_1.data[:some_attribute] = id_1
+  event_data_2.data[:some_attribute] = id_2
 
   writer.write [event_data_1, event_data_2], stream_name
 
@@ -21,8 +21,8 @@ context "Write Batch of Events" do
   body_text_1, get_response = get.("#{path}/0")
   body_text_2, get_response = get.("#{path}/1")
 
-  read_data_1 = EventStore::Client::HTTP::EventData::Read.parse body_text_1
-  read_data_2 = EventStore::Client::HTTP::EventData::Read.parse body_text_2
+  read_data_1 = Serialize::Read.(body_text_1, EventStore::Client::HTTP::EventData::Read, :json)
+  read_data_2 = Serialize::Read.(body_text_2, EventStore::Client::HTTP::EventData::Read, :json)
 
   2.times do |i|
     i += 1

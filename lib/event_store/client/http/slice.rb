@@ -2,106 +2,82 @@ module EventStore
   module Client
     module HTTP
       class Slice
-        attr_reader :data
+        include Schema::DataStructure
 
-        dependency :logger, Telemetry::Logger
+        attribute :entries, Array[Entry]
+        attribute :links, Links
 
-        def entries
-          data['entries']
+        def each(direction, &action)
+          if direction == :forward
+            method_name = :reverse_each
+          else
+            method_name = :each
+          end
+
+          entries.public_send method_name do |entry|
+            action.call entry
+          end
         end
 
         def length
           entries.length
         end
 
-        def links
-          @links ||= Links.build data['links']
-        end
-
-        def initialize(data)
-          @data = data
-        end
-
-        def self.build(data)
-          logger.opt_trace 'Building slice'
-
-          new(data).tap do |instance|
-            Telemetry::Logger.configure instance
-            logger.opt_debug 'Built slice'
-          end
-        end
-
-        def self.parse(json_text)
-          data = parse_json(json_text)
-          logger.opt_data "(#{data.class}) #{data}"
-
-          build(data)
-        end
-
-        def self.parse_json(json_text)
-          logger.opt_trace "Parsing JSON"
-
-          JSON.parse(json_text).tap do
-            logger.opt_debug "Parsed JSON"
-          end
-        end
-
-        def each(direction, &action)
-          method_name = (direction == :forward ? :reverse_each : :each)
-
-          entries.send(method_name) do |event_json_data|
-            action.call event_json_data
-          end
-        end
-
         def next_uri(direction)
-          method_name = (direction == :forward ? :next_uri : :previous_uri)
-
-          links.send method_name
-        end
-
-        def self.logger
-          Telemetry::Logger.get self
-        end
-      end
-
-      class Links
-        attr_reader :next_uri
-        attr_reader :previous_uri
-
-        def initialize(next_uri, previous_uri)
-          @next_uri = next_uri
-          @previous_uri = previous_uri
-        end
-
-        def self.build(links)
-          logger.opt_trace 'Building page links'
-
-          links ||= []
-
-          next_uri = get_next_uri(links)
-          previous_uri = get_previous_uri(links)
-
-          new(next_uri, previous_uri).tap do |instance|
-            logger.opt_debug 'Built page links'
-            logger.opt_data links
+          if direction == :forward
+            links.next_uri
+          else
+            links.previous_uri
           end
         end
 
-        def self.get_next_uri(links)
-          links.map do |link|
-            link['uri'] if link['relation'] == 'previous'
-          end.compact.first
-        end
+        module Serializer
+          def self.json
+            JSON
+          end
 
-        def self.get_previous_uri(links)
-          links.map do |link|
-            link['uri'] if link['relation'] == 'next'
-          end.compact.first
-        end
+          def self.instance(data)
+            links = self.links data['links']
 
-        def self.logger
-          Telemetry::Logger.get self
+            entries = self.entries data['entries']
+
+            Slice.build :entries => entries, :links => links
+          end
+
+          def self.entries(entry_datum)
+            entry_datum.map do |entry_data|
+              entry = Entry.new
+
+              entry.position = entry_data['position_event_number']
+
+              entry_data['links'].each do |link_data|
+                entry.event_uri = link_data['uri'] if link_data['relation'] == 'edit'
+              end
+
+              entry
+            end
+          end
+
+          def self.links(links_data)
+            links = Links.new
+
+            links_data.each do |link_data|
+              if link_data['relation'] == 'previous'
+                links.next_uri = link_data['uri']
+              elsif link_data['relation'] == 'next'
+                links.previous_uri = link_data['uri']
+              end
+            end
+
+            links
+          end
+
+          module JSON
+            def self.deserialize(text)
+              formatted_data = ::JSON.parse text
+              Casing::Underscore.(formatted_data)
+            end
+          end
         end
       end
     end

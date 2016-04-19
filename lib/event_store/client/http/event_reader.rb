@@ -44,11 +44,11 @@ module EventStore
         end
 
         def each(&action)
-          logger.trace "Enumerating events (Stream Name: #{stream_name})"
+          logger.opt_trace "Enumerating events (Stream Name: #{stream_name})"
 
           each_slice(stream_reader, &action)
 
-          logger.debug "Completed enumerating events (Stream Name: #{stream_name})"
+          logger.opt_debug "Completed enumerating events (Stream Name: #{stream_name})"
           nil
         end
 
@@ -59,45 +59,36 @@ module EventStore
         end
 
         def read_slice(slice, &action)
-          logger.trace "Reading slice (Number of Entries: #{slice.length})"
+          logger.opt_trace "Reading slice (Number of Entries: #{slice.length})"
           slice.each(direction) do |event_json_data|
             entry = get_entry(event_json_data)
             action.call entry
           end
-          logger.debug "Read slice (Number of Entries: #{slice.length})"
+          logger.opt_debug "Read slice (Number of Entries: #{slice.length})"
         end
 
-        def change_connection_scheduler(scheduler)
-          session.connection.scheduler = scheduler
+        def get_entry(slice_entry)
+          json_text = get_json_text(slice_entry)
+
+          event_data = parse_entry(json_text)
+
+          event_data.position = slice_entry.position
+
+          event_data
         end
 
-        def get_entry(event_json_data)
-          json_text = get_json_text(event_json_data)
-          parse_entry(json_text)
-        end
+        def get_json_text(slice_entry)
+          uri = slice_entry.event_uri
 
-        def get_json_text(event_json_data)
-          uri = entry_link(event_json_data)
-
-          logger.trace "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.opt_trace "Retrieving event JSON (Stream Name: #{stream_name}, URI: #{uri})"
           body_text, _ = request.(uri)
-          logger.debug "Getting event JSON (Stream Name: #{stream_name}, URI: #{uri})"
+          logger.opt_debug "Retrieved event JSON (Stream Name: #{stream_name}, URI: #{uri})"
 
           body_text
         end
 
         def parse_entry(json_text)
-          EventData::Read.parse json_text
-        end
-
-        def entry_link(event_json_data)
-          event_json_data['links'].map do |link|
-            link['uri'] if link['relation'] == 'edit'
-          end.compact.first
-        end
-
-        def deserialize_entry(event_json_data)
-          event_json_data
+          Serialize::Read.(json_text, EventData::Read, :json)
         end
 
         def self.logger

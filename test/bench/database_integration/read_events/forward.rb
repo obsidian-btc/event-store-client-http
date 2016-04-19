@@ -16,7 +16,12 @@ context "Read Events Forward" do
   end
 
   test "Events are read" do
-    assert(events.length == 2)
+    assert events.length == 2
+  end
+
+  test "Position is set" do
+    assert events[0].position == 0
+    assert events[1].position == 1
   end
 
   test "First written is read first" do
@@ -26,6 +31,6 @@ context "Read Events Forward" do
     __logger.data "First Created Time: #{first}"
     __logger.data " Last Created Time: #{last}"
 
-    assert(first < last)
+    assert first < last
   end
 end
