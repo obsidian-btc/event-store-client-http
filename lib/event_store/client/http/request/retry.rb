@@ -8,7 +8,7 @@ module EventStore
 
             blk.()
 
-          rescue Errno::EPIPE, Errno::ECONNRESET => error
+          rescue Errno::EPIPE, Errno::ECONNRESET, EOFError => error
 
             retries ||= 0
             retries += 1
